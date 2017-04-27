@@ -354,8 +354,8 @@ function load_engines() {
     if ($fp = @fopen(INC_ENGINESINI, 'r')) {
         while ($data = fgets($fp, 256)) {
             $data = trim(chop($data));
-            if (!preg_match('^#', $data) && $data != '') {
-                if (preg_match('^\[(.*)\]$', $data, $engines)) {
+            if (!preg_match('~^#~', $data) && $data != '') {
+                if (preg_match('~^\[(.*)\]$~', $data, $engines)) {
                     // engine
                     $engine = $engines[1];
                     // query | dir
@@ -1561,7 +1561,7 @@ function calcTableSize($id = 0) {
 			if (isset($row['Type'])) {
 				if ($row['Type'] == 'MRG_MyISAM') {
 					$mergetable = TRUE;
-				} else if (!preg_match('/ISAM|HEAP|InnoDB/i', $row['Type'])) {
+				} else if (!preg_match('~ISAM|HEAP|InnoDB~i~', $row['Type'])) {
 					$nonisam    = TRUE;
 				}
 			}
@@ -1571,7 +1571,7 @@ function calcTableSize($id = 0) {
 					if ($nonisam == FALSE) {
 						$this_tblsize = $row['Data_length'] + $row['Index_length'];
 						// user tables
-						if (preg_match('/_logs|_mpdl/i', $table)) {
+						if (preg_match('~_logs|_mpdl~i~', $table)) {
 							$this_id = (int)(substr($table,strlen(PPHL_DB_PREFIX),5));
 							if ($id == 0) { // only update all user table sizes if id is not set (performance!)
 								$sql = "UPDATE ".PPHL_TBL_USERS." SET tblsize = tblsize+$this_tblsize WHERE id = $this_id";
