@@ -1097,13 +1097,15 @@ function get_totalrows($table,$logs_from = 0, $logs_to = 0) {
 	$sql = "SELECT count(*) AS total FROM ".$table;
 	if($logs_from != 0) $sql .= " WHERE time > ".UserToGMT($logs_from)." AND time < (".UserToGMT($logs_to)."+86400)";
 	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
-	return mysqli_result($res,0,'total');
+	$temp = mysqli_fetch_assoc($res);
+	return temp['total'];
 }
 
 function get_tbltotalrows($table) {
 	$sql = "SELECT count(*) AS total FROM ".$table;
 	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
-	return mysqli_result($res,0,'total');
+        $temp = mysqli_fetch_assoc($res);
+        return temp['total'];
 }
 
 
@@ -1114,7 +1116,8 @@ function get_tbltotalrows($table) {
 function get_total_activeUser() {
 	$sql = "SELECT count(*) AS total FROM ".PPHL_TBL_USERS." WHERE conf = 1 AND del_usr = 0";
 	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
-	return mysqli_result($res,0,'total');
+        $temp = mysqli_fetch_assoc($res);
+        return temp['total'];
 }
 
 
