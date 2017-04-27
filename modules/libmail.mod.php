@@ -395,7 +395,7 @@ function ValidEmail($address) { // modified !!
 		$address = $regs[1];
 	}
 	// validate email address
-	if (preg_match("~~^[0-9a-z_]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.[a-z]{2,6}$~i~", $address))
+	if (preg_match("~^[0-9a-z_]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.[a-z]{2,6}$~i", $address))
 		return true;
 	else
 		return false; 
