@@ -14,7 +14,7 @@ include INC_HEAD;
 
 /* total amount of logs that got a search-string */
 $sql = "SELECT count(*) FROM ".$tbl_logs." WHERE seareng > ''";
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 $seartotal = @mysqli_result($res,0);
 
 
@@ -51,7 +51,7 @@ $sql = "SELECT browser,version,system,count(id) as hits FROM $tbl_logs AS L, ".P
      . "WHERE agentid = A.id ";
 if(isset($sql_fromto)) $sql .= "AND ".$sql_fromto;
 $sql .= "GROUP BY browser,version,system ORDER BY hits DESC LIMIT ".$topbrowseros_lim;
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 $i = 3;
 while ($row = @mysqli_fetch_array($res)) {
 	$browsstr = ($row[0] == '') ? '['.$strUndefined.']' : $row[0].' '.formatBrowsver($row[1]).'; '.$row[2];
@@ -83,7 +83,7 @@ $sql = "SELECT browser, count(browser) as hits FROM $tbl_logs AS L, ".PPHL_TBL_A
      . "WHERE agentid = A.id AND browser > '' ";
 if(isset($sql_fromto)) $sql .= "AND ".$sql_fromto;
 $sql .= "GROUP BY browser ORDER BY hits DESC";
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 $i = 3;
 while ($row = @mysqli_fetch_array($res)) {
 	$browser_full = (isset($arr_brows[$row[0]])) ? $arr_brows[$row[0]] : $row[0];
@@ -114,7 +114,7 @@ $sql = "SELECT system, count(system) as hits FROM $tbl_logs AS L, ".PPHL_TBL_AGE
      . "WHERE agentid = A.id AND system > '' ";
 if(isset($sql_fromto)) $sql .= "AND ".$sql_fromto;
 $sql .= "GROUP BY system ORDER BY hits DESC";
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 $i = 3;
 while ($row = @mysqli_fetch_array($res)) {
 	$system_full = (isset($arr_sys[$row[0]])) ? $arr_sys[$row[0]] : $row[0];
@@ -145,7 +145,7 @@ $sql = "SELECT seareng,count(seareng) as hits FROM ".$tbl_logs." "
      . "WHERE seareng > '' ";
 if(isset($sql_fromto)) $sql .= "AND ".$sql_fromto;
 $sql .= "GROUP BY seareng ORDER BY hits DESC LIMIT ".$topsearcheng_lim;
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 $i = 3;
 while ($row = @mysqli_fetch_array($res)) {
 	$ArrSeareng[$i][0] = '<a>'.$row[0].'</a>';

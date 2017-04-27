@@ -50,13 +50,13 @@ function sameDL() { //checks if file has been already downloaded before
 if (!sameDL()) {
 	if (!isset($$cookie_phloff)) { //Check if Phlogger is switched off through cookie
 		$sql = "UPDATE $tbl_mpdl SET hits = hits+1 WHERE type = 'dl' AND enabled AND url = '".addslashes(stripInput($dlurl))."'";
-		$res = mysqli_query($link, $sql);
+		$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		if (!mysqli_affected_rows()) {
 			// delete old disabled entry, in case there is one
-			@mysqli_query($link, "DELETE FROM $tbl_mpdl WHERE type = 'dl' AND url = '".addslashes(stripInput($dlurl))."'");
+			@mysqli_query($GLOBALS['mysql_link'], "DELETE FROM $tbl_mpdl WHERE type = 'dl' AND url = '".addslashes(stripInput($dlurl))."'");
 			// insert a new dl entry
 			$sql = "INSERT INTO $tbl_mpdl (type,url,since) VALUES ('dl','".addslashes(stripInput($dlurl))."',$curr_gmt_time)";
-			$res = mysqli_query($link, $sql);
+			$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		}
 	}
 }

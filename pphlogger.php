@@ -119,7 +119,7 @@ if ( !isset($$cookie_phloff) &&  // cookie-switch off?
 	 */
 	if (isset($jslogid) && $st == 'js') {
 		$sql = "UPDATE $tbl_logs SET res_w = $res_w, res_h = $res_h, color = $c WHERE logid = $jslogid";
-		$res = mysqli_query($link, $sql);
+		$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		mpdl_setTitle ($url, $title);
 		setcookie($cookie_same, $jslogid, time()+$timeout);
 		// nothing else needs to be done here
@@ -148,7 +148,7 @@ if ( !isset($$cookie_phloff) &&  // cookie-switch off?
 		$sql = "UPDATE $tbl_logs SET t_reload = $curr_gmt_time, online = $curr_gmt_time - time, mp = mp+1";
 		if($newpath) $sql .= ", path='$newpath'"; // only update the path if it has changed
 		$sql .= " WHERE logid = $logid";
-		$res = mysqli_query($link, $sql);
+		$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		// DO NOT SET COOKIE if called by st='phpjs' - cookie will be set in following st='js'
 		if($st != 'phpjs') setcookie($cookie_same, $logid, time()+$timeout);
 		
@@ -162,7 +162,7 @@ if ( !isset($$cookie_phloff) &&  // cookie-switch off?
 		$sql = "UPDATE ".PPHL_TBL_USERS." SET hits = hits+1,"
 		     . "last_access = $curr_gmt_time "
 		     . "WHERE id = $id";
-		$res = mysqli_query($link, $sql);
+		$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		$hits += 1;
 		
 		/*
@@ -212,7 +212,7 @@ if ( !isset($$cookie_phloff) &&  // cookie-switch off?
 		     . "(hostname,tld,ip,entryid,path,referer,seareng,agentid,res_w,res_h,color,time,t_reload,proxy,proxy_ip,proxy_hostname) "
 		     . "VALUES ('$hostname','$tld','$ip',$entryid,$entryid,'$referer','$seareng',$agentid,$res_w,$res_h,$c,$curr_gmt_time,$curr_gmt_time,"
 		     . "'$proxy','$proxy_ip','$proxy_hostname')";
-		$res = mysqli_query($link, $sql);
+		$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		$logid = mysqli_insert_id();
 		
 		/* DEBUG !!! - send email to administrator*/

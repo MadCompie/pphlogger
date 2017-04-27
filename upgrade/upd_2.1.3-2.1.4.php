@@ -32,7 +32,7 @@ $sql = "UPDATE ".PPHL_TBL_USERS." SET last_access=last_access, ipblock = '127.0.
 mysqli_qry($sql);
 
 $sql = "SELECT id FROM ".PPHL_TBL_USERS;
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	$sql = "ALTER TABLE ".PPHL_DB_PREFIX.$id.$tbl_logs." "

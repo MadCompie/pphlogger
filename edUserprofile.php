@@ -333,7 +333,7 @@ if (isset($wrongpw)) echo "<a class=\"invertLink\">$strWrongPw</a><br />";
             <form action="<?php echo DO_LOADCSS; ?>" method="post"><div align="right"> 
               <?php
 				$sql = "SELECT id,css,userid FROM ".PPHL_TBL_CSS." WHERE userid = 0 OR userid = $id ORDER BY userid ASC, css ASC";
-				$res = mysqli_query($link, $sql);
+				$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 				echo "<select class=\"myInput";
 				if ($guest) print "Guest";
 				echo "\" name=\"N_css\">\n";

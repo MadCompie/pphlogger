@@ -85,11 +85,11 @@ class LogsCleanUp {
 			/* delete by number of logs */
 			if ($dellog_lim > 0) {
 				$sql = "SELECT time FROM $tbl ORDER BY time DESC LIMIT $dellog_lim,1";
-				$res = mysqli_query($link, $sql);
+				$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 				$from_time = @mysqli_result($res,0,'time');
 				if ($from_time) {
 					$sql = "DELETE FROM $tbl WHERE time < $from_time";
-					mysqli_query($link, $sql);
+					mysqli_query($GLOBALS['mysql_link'], $sql);
 				}
 				/* MySQL 4 -----------------------------------------------------------------
 				
@@ -106,14 +106,14 @@ class LogsCleanUp {
 				the WHERE clause. 
 				
 				$sql = "DELETE FROM $tbl ORDER BY time LIMIT $del_rows";
-				$res = mysqli_query($link, $sql);
+				$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 				---------------------------------------------------------------------------- */
 			}
 			
 			/* delete by date */
 			if ($dellog_lim_d > 0) {
 				$sql = "DELETE FROM $tbl WHERE time < ".($curr_gmt_time-($dellog_lim_d*24*60*60));
-				mysqli_query($link, $sql);
+				mysqli_query($GLOBALS['mysql_link'], $sql);
 			}
 		}
 	}
@@ -137,18 +137,18 @@ class LogsCleanUp {
 			/* delete by number of logs */
 			if ($delpath_lim > 0) {
 				$sql = "SELECT time FROM $tbl WHERE path > '' ORDER BY time DESC LIMIT $delpath_lim,1";
-				$res = mysqli_query($link, $sql);
+				$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 				$from_time = @mysqli_result($res,0,'time');
 				if ($from_time) {
 					$sql = "UPDATE $tbl SET path = NULL WHERE path >= '' AND time < $from_time";
-					mysqli_query($link, $sql);
+					mysqli_query($GLOBALS['mysql_link'], $sql);
 				}
 			}
 			
 			/* delete by date */
 			if ($delpath_lim_d > 0) {
 				$sql = "UPDATE $tbl SET path = NULL WHERE path >= '' AND time < ".($curr_gmt_time-($delpath_lim_d*24*60*60));
-				mysqli_query($link, $sql);
+				mysqli_query($GLOBALS['mysql_link'], $sql);
 			}
 		}
 	}

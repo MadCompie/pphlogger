@@ -24,7 +24,7 @@ include PPHL_SCRIPT_PATH."main_location.inc";
 $new_res = '';
 
 $sql = "SELECT id FROM ".PPHL_TBL_USERS;
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	$sql = "ALTER TABLE ".PPHL_DB_PREFIX.$id.$tbl_logs." "

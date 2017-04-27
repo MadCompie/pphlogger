@@ -6,7 +6,7 @@
 			. "FROM ".$tbl_logs." "
 			. $ip_onl_sql." "
 			. "ORDER BY t_reload DESC";
-	$ip_res = mysqli_query($link, $ip_sql);
+	$ip_res = mysqli_query($GLOBALS['mysql_link'], $ip_sql);
 	while ($row = @mysqli_fetch_array($ip_res)) {
 			$hostname = $row['hostname'];
 			if ($hostname == '') $hostname = $row['ip'];

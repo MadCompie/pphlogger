@@ -35,7 +35,7 @@ mysqli_qry($sql);
 
 //scan through all your user's log-tables and extract TLD-names into a new column
 $sql = "SELECT id FROM ".PPHL_TBL_USERS;
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	$sql = "ALTER TABLE ".PPHL_DB_PREFIX.$id.$tbl_logs." ADD tld varchar(8) NOT NULL AFTER hostname;";

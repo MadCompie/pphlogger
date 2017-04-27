@@ -49,7 +49,7 @@ function reload_visperhour($hour_mode = 'log_hour_month', $yyyymm = 0) {
 		 . "FROM $tbl_logs "
 		 . $sql2
 		 . "GROUP BY hour";
-	$res = mysqli_query($link, $sql);
+	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 	while ($row = mysqli_fetch_array($res)) {
 		$hour_index = (int) $row['hour'];
 		$arrHour[$hour_index] = $row['hits'];
@@ -77,7 +77,7 @@ function update_calendar($uniq_type = 'log_day_mo') {
 	 */
 	$sql = "SELECT yyyymm,cache,time FROM ".PPHL_TBL_CACHE." WHERE id=$id AND type='$uniq_type' "
 	     . "ORDER BY yyyymm DESC";
-	$res       = mysqli_query($link, $sql);
+	$res       = mysqli_query($GLOBALS['mysql_link'], $sql);
 	$yyyymm    = mysqli_result($res,0,'yyyymm');
 	$cache     = mysqli_result($res,0,'cache');
 	$timestamp = mysqli_result($res,0,'time');
@@ -101,7 +101,7 @@ function update_calendar($uniq_type = 'log_day_mo') {
 				if ($uniq_type == 'log_day_mo') $uniq_sql = 'COUNT(mp)';
 				else                            $uniq_sql = 'SUM(mp)';
 				$sql = "SELECT $uniq_sql AS D FROM $tbl_logs WHERE time BETWEEN $gmt_day AND ($gmt_day+86400)";
-				$res = mysqli_query($link, $sql);
+				$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 				$cache_arr[$j-1] = mysqli_result($res,0,0);
 				if (date('Ymd',GMTtoUser($gmt_day)) >= $today) $finished = true;
 			}
@@ -147,7 +147,7 @@ function show_calendar($uniq_type = 'log_day_mo') {
 	$sql = "SELECT yyyymm,cache FROM ".PPHL_TBL_CACHE." WHERE id=$id AND type='$uniq_type'"
 	     . " AND yyyymm > $show_start_yyyymm"
 	     . " ORDER BY yyyymm";
-	$res = mysqli_query($link, $sql);
+	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 	
 	// create header of calendar
 	$buffer = "<div align=\"center\"><table cellspacing=\"1\" border=\"0\">\n";

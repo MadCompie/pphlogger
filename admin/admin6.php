@@ -29,7 +29,7 @@ switch(@$action) {
 	case 'preview':
 		
 		$sql = "DELETE FROM ".PPHL_TBL_CACHE." WHERE id=0 AND type = 'mlist_sql'";
-		$res = mysqli_query($link, $sql);
+		$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		
 		/* select the users */
 		$sql = "SELECT * FROM ".PPHL_TBL_USERS;
@@ -38,7 +38,7 @@ switch(@$action) {
 		 	$sql.= ' '.usrSearch();
 		}
 		$sql.= " ORDER BY id";
-		$res = mysqli_query($link, $sql);
+		$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		
 		$text = $mailtext;
 		$to_email = ""; $num_mails = 0;
@@ -49,7 +49,7 @@ switch(@$action) {
 		}
 		
 		$mlist_sql = "INSERT INTO ".PPHL_TBL_CACHE." (type,cache,time) VALUES ('mlist_sql','".addslashes($sql)."',$curr_gmt_time)";
-		$res = mysqli_query($link, $mlist_sql);
+		$res = mysqli_query($GLOBALS['mysql_link'], $mlist_sql);
 		?>
       <form action="<?php echo ADM_MLISTSEND; ?>" method="post" target="_blank">
         <br />

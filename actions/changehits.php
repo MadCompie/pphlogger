@@ -8,7 +8,7 @@ include INC_GETUSERDATA;
 if ($password == $pw) {
 	$count = abs(chop($new_hits));
 	$sql= "UPDATE ".PPHL_TBL_USERS." SET hits='".$count."' where id='".$id."'";
-	$res = mysqli_query($link, $sql);
+	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 	echo mysqli_error();
 }
 

@@ -67,7 +67,7 @@
 					
 					case 'css':
 						$sql2 = "SELECT id,css,userid FROM ".PPHL_TBL_CSS." WHERE userid = 0 ORDER BY css ASC";
-						$res2 = mysqli_query($link, $sql2);
+						$res2 = mysqli_query($GLOBALS['mysql_link'], $sql2);
 						echo "<select class=\"myInput\" name=\"fields[".$SetupSettings[$i][$j]."]\">";
 						while ($row2 = @mysqli_fetch_array($res2)) {
 							echo "<option ";

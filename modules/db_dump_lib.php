@@ -15,7 +15,7 @@ function get_table_def($table, $crlf)
 
     $schema_create .= "CREATE TABLE $table ($crlf";
 
-    $result = mysqli_query($link, "SHOW FIELDS FROM $table") or mysqli_die();
+    $result = mysqli_query($GLOBALS['mysql_link'], "SHOW FIELDS FROM $table") or mysqli_die();
     while($row = mysqli_fetch_array($result))
     {
         $schema_create .= "   $row[Field] $row[Type]";
@@ -29,7 +29,7 @@ function get_table_def($table, $crlf)
         $schema_create .= ",$crlf";
     }
     $schema_create = ereg_replace(",".$crlf."$", "", $schema_create);
-    $result = mysqli_query($link, "SHOW KEYS FROM $table") or mysqli_die();
+    $result = mysqli_query($GLOBALS['mysql_link'], "SHOW KEYS FROM $table") or mysqli_die();
     while($row = mysqli_fetch_array($result))
     {
         $kname=$row['Key_name'];
@@ -58,7 +58,7 @@ function get_table_def($table, $crlf)
 // Get the content of $table as a series of INSERT statements.
 function get_table_content($table, $handler, $where)
 {
-    $result = mysqli_query($link, "SELECT * FROM $table $where") or mysqli_die();
+    $result = mysqli_query($GLOBALS['mysql_link'], "SELECT * FROM $table $where") or mysqli_die();
     $i = 0;
     while($row = mysqli_fetch_row($result))
     {

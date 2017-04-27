@@ -28,7 +28,7 @@ if (!ereg("^[A-Za-z0-9_.-]{1,30}$",$username) || !ereg("[A-Za-z]",$username)) {
 }
 
 /* check if username doesn't exist yet */
-$res = mysqli_query($link, "SELECT username FROM ".PPHL_TBL_USERS." WHERE username = '".$username."'");
+$res = mysqli_query($GLOBALS['mysql_link'], "SELECT username FROM ".PPHL_TBL_USERS." WHERE username = '".$username."'");
 if (!@mysqli_num_rows($res)) {
 	
 	if (!email_is_valid($email)) {
@@ -47,7 +47,7 @@ if (!@mysqli_num_rows($res)) {
 	/* this will insert a new user into your user-table, setting the starting date to the admin's timezone */
 	$sql = "INSERT INTO ".PPHL_TBL_USERS." (id,username,pw,admin,demo,email,date_start,last_access,your_url,gmt,lang,conf) "
 	     . "VALUES ($id,'$username','$pw',$admin,$demo,'$email',$curr_gmt_time,$curr_gmt_time,'$N_your_url','$N_gmt','$N_lang',$conf)";
-	$res = mysqli_query($link, $sql);
+	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 	
 	
 	if (!$res) {

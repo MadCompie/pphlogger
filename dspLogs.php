@@ -22,11 +22,11 @@ if (isset($enable_del) && !$guest) {
 		}
 		$qry_in .= ')';
 		$sql = "DELETE FROM ".$tbl_logs." WHERE logid IN $qry_in";
-		$res = mysqli_query($link, $sql);
+		$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		$affected_rows = mysqli_affected_rows();
 		if ($affected_rows) {
 			$sql = "UPDATE ".PPHL_TBL_USERS." SET hits = hits-$affected_rows WHERE id = $id";
-			$res = mysqli_query($link, $sql);
+			$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 			$hits = $hits-$affected_rows;
 		}
 	}
@@ -39,13 +39,13 @@ include INC_HEAD;
 /* confirm account when user logs in the first time: */
 if (!$conf && !isset($admin_rulez)) {
 	$sql = "UPDATE ".PPHL_TBL_USERS." SET conf = 1 WHERE id = $id";
-	$res = mysqli_query($link, $sql);
+	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 }
 
 /* update last_access: */
 if (!isset($admin_rulez) || $admin) {
 	$sql = "UPDATE ".PPHL_TBL_USERS." SET last_access = $curr_gmt_time WHERE id = $id";
-	$res = mysqli_query($link, $sql);
+	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 }
 
 /* total amount of logs in users table */
@@ -159,7 +159,7 @@ $to_d = date('d',$to_date);
 		$sql .= (isset($offset)) ? "LIMIT ".$offset.",".$loglim : "LIMIT ".$loglim;
 	}
 	
-	$res = mysqli_query($link, $sql);
+	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 	// show the whole log-list:
 	include INC_LOGLIST;
 
@@ -211,12 +211,12 @@ $to_d = date('d',$to_date);
   
 <?php
 	$sql = "SELECT TIME_FORMAT(SEC_TO_TIME(AVG(online)),'%k:%i:%s'), ROUND(AVG(mp),2) FROM ".$tbl_logs;
-	$res = mysqli_query($link, $sql);
+	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 	$online_avg = mysqli_result($res,0,0);
 	$mp_avg = mysqli_result($res,0,1);
 	
 	$sql = "SELECT TIME_FORMAT(SEC_TO_TIME(AVG(online)),'%k:%i:%s'), ROUND(AVG(mp),2) FROM ".$tbl_logs." WHERE time > ($curr_gmt_time-(30*24*60*30))";
-	$res = mysqli_query($link, $sql);
+	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 	$online_mo = mysqli_result($res,0,0);
 	$mp_mo = mysqli_result($res,0,1);
 ?>
@@ -248,7 +248,7 @@ $to_d = date('d',$to_date);
 <tr>
 <?php
 	$sql = "SELECT count(*) FROM $tbl_mpdl WHERE type='mp' AND enabled";
-	$res = mysqli_query($link, $sql);
+	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 	$mp_cnt = mysqli_result($res,0,0);
 	$num = ($mp_cnt > $mpfront_lim) ? $mpfront_lim : $mp_cnt;
 	

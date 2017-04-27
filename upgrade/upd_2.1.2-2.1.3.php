@@ -24,7 +24,7 @@ define('PPHL_SCRIPT_PATH', '../');
 include PPHL_SCRIPT_PATH."main_location.inc";
 
 $sql = "SELECT id FROM ".PPHL_TBL_USERS;
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	$sql = "ALTER TABLE ".PPHL_DB_PREFIX.$id.$tbl_logs." "
@@ -36,7 +36,7 @@ while ($row = mysqli_fetch_array($res)) {
 	$sql = "SELECT logid,agent FROM ".PPHL_DB_PREFIX.$id.$tbl_logs." "
 	     . "WHERE browser IS NULL";
 	echo $sql.$br; flush();
-	$res2 = mysqli_query($link, $sql);
+	$res2 = mysqli_query($GLOBALS['mysql_link'], $sql);
 	while ($row2 = mysqli_fetch_array($res2)) {
 		$new_agt = extract_agent($row2['agent']);
 		if (is_array($new_agt)) {
@@ -46,7 +46,7 @@ while ($row = mysqli_fetch_array($res)) {
 					 . "version = '".$new_agt[1]."', "
 					 . "system = '".$new_agt[3]."' "
 					 . "WHERE logid = '".$row2['logid']."'";
-			mysqli_query($link, $agt_sql);
+			mysqli_query($GLOBALS['mysql_link'], $agt_sql);
 			if (mysqli_error()) echo "<b>error: ".mysqli_error()."</b>".$br;
 		}
 	}

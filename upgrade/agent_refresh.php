@@ -16,7 +16,7 @@ define('PPHL_SCRIPT_PATH', '../');
 include PPHL_SCRIPT_PATH."main_location.inc";
 
 $sql = "SELECT id,agent FROM ".PPHL_TBL_AGENTS;
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = mysqli_fetch_array($res)) {
 	$new_agt = extract_agent($row['agent']);
 	if (is_array($new_agt)) {

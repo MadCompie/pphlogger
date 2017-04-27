@@ -9,16 +9,16 @@ $arr_engines = load_engines();
 
 //scan through all your user's log-tables and extract keywords
 $sql = "SELECT id,kwspl FROM ".PPHL_TBL_USERS;
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = mysqli_fetch_array($res)) {
 	$id    = $row['id'];
 	$kwspl = $row['kwspl'];
 	// echo "<b>$id</b><br />";
 	$sql_del = "DELETE FROM ".PPHL_DB_PREFIX.$id.$tbl_mpdl." WHERE type = 'kw'";
-	$res_del = mysqli_query($link, $sql_del);
-	mysqli_query($link, "FLUSH TABLES");
+	$res_del = mysqli_query($GLOBALS['mysql_link'], $sql_del);
+	mysqli_query($GLOBALS['mysql_link'], "FLUSH TABLES");
 	$sql_keyw = "SELECT logid,referer FROM ".PPHL_DB_PREFIX.$id.$tbl_logs." WHERE referer LIKE '%?%'";
-	$res_keyw = mysqli_query($link, $sql_keyw);
+	$res_keyw = mysqli_query($GLOBALS['mysql_link'], $sql_keyw);
 	while ($row_keyw = mysqli_fetch_array($res_keyw)) {
 		$keywrd = show_keywords($row_keyw['referer'], $arr_engines);
 		if ($keywrd[3]) {
@@ -28,7 +28,7 @@ while ($row = mysqli_fetch_array($res)) {
 			$sql_seareng = "UPDATE ".PPHL_DB_PREFIX.$id.$tbl_logs." "
 			             . "SET time=time, seareng = '".$keywrd[2]."' "
 			             . "WHERE logid = ".$row_keyw['logid'];
-			mysqli_query($link, $sql_seareng);
+			mysqli_query($GLOBALS['mysql_link'], $sql_seareng);
 		}
 	}
 }

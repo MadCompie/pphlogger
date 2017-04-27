@@ -58,7 +58,7 @@ $upd223_start = getmicrotime();
  * (pphl_xxxxx_ipcheck is deprecated and no longer used in 2.2.3)
  */
 $sql = "SELECT id,username FROM ".PPHL_TBL_USERS." ORDER BY id ASC";
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	$this_tbl_logs    = PPHL_DB_PREFIX.$id.$tbl_logs;

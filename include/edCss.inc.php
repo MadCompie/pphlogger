@@ -18,7 +18,7 @@ switch (@$action) {
 		
 		/* edit a stylesheet */
 		$sql = "SELECT * FROM ".PPHL_TBL_CSS." WHERE id = '$css_str'";
-		$res = mysqli_query($link, $sql);
+		$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		
 		echo "<table border=\"0\" align=\"center\" cellpadding=\"3\"><tr>\n";
 		echo "<th class=\"invertLink\">color</th>\n";
@@ -70,10 +70,10 @@ switch (@$action) {
 	case 'delete':
 		$sql = "DELETE FROM ".PPHL_TBL_CSS." WHERE id = '$css_str'";
 		if (defined('__GOT_USERDATA__')) $sql .= " AND userid = $id";
-		$res = @mysqli_query($link, $sql);
+		$res = @mysqli_query($GLOBALS['mysql_link'], $sql);
 		if (@mysqli_num_rows($res)) {
 			$sql = "UPDATE ".PPHL_TBL_USERS." SET cssid = 7 WHERE cssid = $css_str";
-			mysqli_query($link, $sql);
+			mysqli_query($GLOBALS['mysql_link'], $sql);
 		}
 		Header("Location: $PHP_SELF");
 		exit;
@@ -97,7 +97,7 @@ switch (@$action) {
 		if (@$updval) {
 			$sql = "UPDATE ".PPHL_TBL_CSS." SET ".$sql_values." WHERE id = ".$fields_prev['id'];
 			if (defined('__GOT_USERDATA__')) $sql .= " AND userid = ".$id;
-			$res = mysqli_query($link, $sql);
+			$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		}
 		Header("Location: $PHP_SELF");
 		exit;
@@ -112,7 +112,7 @@ switch (@$action) {
 			$sql_values .= $comma."'".$fields[$css_fields[$i]]."'";
 		}
 		$sql = "INSERT INTO ".PPHL_TBL_CSS." (".$sql_fields.") VALUES (".$sql_values.")";
-		$res = mysqli_query($link, $sql);
+		$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		Header("Location: $PHP_SELF");
 		exit;
 	break;
@@ -123,7 +123,7 @@ switch (@$action) {
 		$sql = "SELECT id,css,userid,".$css_show." FROM ".PPHL_TBL_CSS;
 		if (defined('__GOT_USERDATA__')) $sql .= " WHERE userid = $id OR userid = 0";
 		$sql .= " ORDER BY userid ASC, css ASC";
-		$res = mysqli_query($link, $sql);
+		$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		
 		echo "<p>&nbsp;</p>";
 		echo "<table class=\"box-table\" border=\"0\" align=\"center\" cellpadding=\"3\"><tr>\n";

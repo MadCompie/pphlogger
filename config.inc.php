@@ -65,8 +65,7 @@ if (!defined('__GOT_MYSQL__')){
 	}
 	$mysqli_port = (str_is_int(PPHL_DB_PORT)) ? ':'.PPHL_DB_PORT : '';
 
-	global $link;
-	$link = @$cfunction(PPHL_DB_HOST.$mysqli_port, PPHL_DB_USER, PPHL_DB_PWD, PPHL_DB_NAME)
+	$GLOBALS['mysql_link'] = @$cfunction(PPHL_DB_HOST.$mysqli_port, PPHL_DB_USER, PPHL_DB_PWD, PPHL_DB_NAME)
 	 or die("unable to connect to database on '".PPHL_DB_HOST."' with user '".PPHL_DB_USER."'<br />".
 	        '('.mysqli_errno().') '.mysqli_error().'<br />'.
 			"Please check your settings in config.inc.php !<br />");

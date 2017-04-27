@@ -20,7 +20,7 @@ if (!defined('__GOT_USERDATA__')){
 	/* assign the user's values */
     $id = mysqli_escape_string($id);
 	$sql = "SELECT * FROM ".PPHL_TBL_USERS." WHERE id='$id' OR username='$id'";
-	$res = mysqli_query($link, $sql);
+	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 	if (mysqli_num_rows($res)) {
 		$cnt_user_fields = count($user_fields);
 		for($i = 0; $i < $cnt_user_fields; $i++) {

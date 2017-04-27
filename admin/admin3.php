@@ -35,7 +35,7 @@ $ip_sql = "SELECT P.id,"
 		. "WHERE P.id = PU.id "
 		. "ORDER BY P.t_reload DESC";
 $ip_sql .= (isset($offset)) ? " LIMIT ".$offset.",".$show_cust : " LIMIT ".$show_cust;
-$res = mysqli_query($link, $ip_sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $ip_sql);
 $i = 3; $m = 1;
 while ($row = @mysqli_fetch_array($res)) {
 	$hostname = ($row[5] == '') ? $row[4] : $row[5];

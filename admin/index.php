@@ -26,7 +26,7 @@ switch(@$action) {
 		$LOGSCLEANUP = new LogsCleanUp();
 		@set_time_limit(0);
 		$sql = "SELECT id,limh,limd,limh_p,limd_p FROM ".PPHL_TBL_USERS;
-		$res = mysqli_query($link, $sql);
+		$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		while ($row = mysqli_fetch_array($res)) {
 			$LOGSCLEANUP->execute($row['id'], array($row['limh'], $row['limd'], $row['limh_p'], $row['limd_p']));
 		}
@@ -34,7 +34,7 @@ switch(@$action) {
 	case 'optimize_usr':
 		@set_time_limit(0);
 		$sql = "SELECT id FROM ".PPHL_TBL_USERS;
-		$res = mysqli_query($link, $sql);
+		$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 		while ($row = mysqli_fetch_array($res)) {
 			optimizeUsrTables($row['id']);
 		}

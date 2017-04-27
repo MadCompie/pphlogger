@@ -15,7 +15,7 @@ define('PPHL_SCRIPT_PATH', '../');
 include PPHL_SCRIPT_PATH."main_location.inc";
 
 $sql = "SELECT id FROM ".PPHL_TBL_USERS;
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	$usr_mpdl = PPHL_DB_PREFIX.$id.$tbl_mpdl;
@@ -23,7 +23,7 @@ while ($row = mysqli_fetch_array($res)) {
 
 	$sql2 = "SELECT url,hits FROM ".$usr_mpdl." "
 	      . "WHERE type='mp' AND (url LIKE '%?%' OR url LIKE '%\#%' OR url LIKE '%&%' OR url LIKE '% %')";
-	$res2 = mysqli_query($link, $sql2);
+	$res2 = mysqli_query($GLOBALS['mysql_link'], $sql2);
 	if ($res2) {
 		while ($row2 = mysqli_fetch_array($res2)) {
 			$orig_mp = $row2['url'];
@@ -32,15 +32,15 @@ while ($row = mysqli_fetch_array($res)) {
 			
 			$fix_sql = "UPDATE $usr_mpdl SET hits = hits+".$hits.") "
 			         . "WHERE url='".$fixed_mp."'";
-			$fix_res = mysqli_query($link, $fix_sql);
+			$fix_res = mysqli_query($GLOBALS['mysql_link'], $fix_sql);
 			if (!$fix_res) {
 				$new_sql = "INSERT INTO ".$usr_mpdl." (type,url,hits) VALUES ('mp','$fixed_mp','$hits')";
-				$new_res = mysqli_query($link, $new_sql);
+				$new_res = mysqli_query($GLOBALS['mysql_link'], $new_sql);
 				echo '<b>added: </b>';
 			}
 			
 			$del_sql = "DELETE FROM ".$usr_mpdl." WHERE url = '".$orig_mp."' AND type='mp'";
-			mysqli_query($link, $del_sql);
+			mysqli_query($GLOBALS['mysql_link'], $del_sql);
 			
 			echo $orig_mp.' >>> '.$fixed_mp.$br;
 		}

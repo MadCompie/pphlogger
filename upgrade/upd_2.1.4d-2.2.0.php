@@ -21,7 +21,7 @@ function convert_to_GMT($tbl,$column,$gmt,$upd_special = '') {
 	$gmt = (int)$gmt;
 	$new_def = "int(10) UNSIGNED NOT NULL";
 	
-	$res=mysqli_query($link, 'SHOW FIELDS FROM '.$tbl);
+	$res=mysqli_query($GLOBALS['mysql_link'], 'SHOW FIELDS FROM '.$tbl);
 	while ($row = mysqli_fetch_array($res)) {
 		if($row['Field'] == $column) $def = $row['Type'];
 	}
@@ -104,7 +104,7 @@ mysqli_qry($sql);
 
 /* update logs table */
 $sql = "SELECT id,username,gmt,your_url FROM ".PPHL_TBL_USERS;
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	echo "upgrading <b>$id - ".$row['username']." ...</b>".$br;
@@ -146,7 +146,7 @@ while ($row = mysqli_fetch_array($res)) {
 	
 	/* import the old cache-data for the calendar */
 	$sql = "SELECT type,cache,time FROM ".PPHL_TBL_CACHE." WHERE id=$id AND yyyymm=0";
-	$res_cache = mysqli_query($link, $sql);
+	$res_cache = mysqli_query($GLOBALS['mysql_link'], $sql);
 	while ($row_cache = mysqli_fetch_array($res_cache)) {
 		$cache_arr = explode("\n",$row_cache['cache']);
 		for ($i=0; $i < count($cache_arr); $i++) {
@@ -154,12 +154,12 @@ while ($row = mysqli_fetch_array($res)) {
 			$cache  = substr($cache_arr[$i],7);
 			$sql_n = "INSERT INTO ".PPHL_TBL_CACHE." (id,type,yyyymm,cache,time) "
 			       . "VALUES ($id,'".$row_cache['type']."',$yyyymm,'$cache',".$row_cache['time'].")";
-			mysqli_query($link, $sql_n);
+			mysqli_query($GLOBALS['mysql_link'], $sql_n);
 		}
 	}
 	/* remove the user's old cache-data */
 	$sql = "DELETE FROM ".PPHL_TBL_CACHE." WHERE yyyymm=0 AND id=$id";
-	mysqli_query($link, $sql);
+	mysqli_query($GLOBALS['mysql_link'], $sql);
 }
 
 /* remove all old cache-data or messed up data in the cache table */

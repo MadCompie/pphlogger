@@ -136,7 +136,7 @@ $usrIDs = getUseridArr();
 $cnt_orphans = 0;
 if ($usrIDs) {
 	$sql = "SHOW TABLES LIKE '%_____\_logs'";
-	$res = mysqli_query($link, $sql);
+	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 	while ($row = @mysqli_fetch_array($res)) {
 		if(eregi("([0-9]{5})",$row[0],$id_arr)) {
 			$id = $id_arr[0];
@@ -187,7 +187,7 @@ function EnumToTinyint($tbl, $column, $default = 1, $new_column = FALSE) {
 	
 	$new_def = "TINYINT(1) DEFAULT '".$default."'";
 	
-	$res=mysqli_query($link, 'SHOW FIELDS FROM '.$tbl);
+	$res=mysqli_query($GLOBALS['mysql_link'], 'SHOW FIELDS FROM '.$tbl);
 	while ($row = mysqli_fetch_array($res)) {
 		if($row['Field'] == $column) $def = $row['Type'];
 	}
@@ -241,7 +241,7 @@ mysqli_qry($sql);
 
 /* fix for CVS users, update iceage */
 $sql = "UPDATE ".PPHL_TBL_CSS." SET color_3a = 'CCE6FF', color_1t = 'FFFFFF', color_1a = 'CCE6FF' WHERE css = 'iceage'";
-mysqli_query($link, $sql);
+mysqli_query($GLOBALS['mysql_link'], $sql);
 
 /* new CSS: doggy, caits, iceage */
 $sql = "INSERT INTO ".PPHL_TBL_CSS." VALUES (NULL, 0, 'doggy', 'FFFFFF', '000000', 'FFFFFF', 'FFFFFF', '006A35', 'FFFFFF', 'FFFFFF', '008040', 'FFFFFF', 'FFFFFF', '00974B', 'FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF', '000000', 'FFFFFF', 'FFFFFF', 'FFFFFF', '00A85C', 'FFFFFF', 'FFFFFF', '006A35', '000000')";
@@ -258,7 +258,7 @@ $sql = "ALTER TABLE ".PPHL_TBL_USERS." "
 mysqli_qry($sql);
 
 $sql = "SELECT id, css FROM ".PPHL_TBL_USERS." WHERE cssid = 0";
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = @mysqli_fetch_array($res)) {
 	if (strstr($row['css'], '|')) {
 		$css_arr  = explode('|',$row['css']);
@@ -269,7 +269,7 @@ while ($row = @mysqli_fetch_array($res)) {
 		$this_uid = 0;
 	}
 	$sql = "SELECT id FROM ".PPHL_TBL_CSS." WHERE userid = $this_uid AND css = '$this_css'";
-	$res2 = mysqli_query($link, $sql);
+	$res2 = mysqli_query($GLOBALS['mysql_link'], $sql);
 	$this_cssid = mysqli_result($res2,0,0);
 	$sql = "UPDATE ".PPHL_TBL_USERS." SET cssid = $this_cssid WHERE id = ".$row['id']." AND css = '".$row['css']."'";
 	mysqli_qry($sql, FALSE);
@@ -280,7 +280,7 @@ mysqli_qry($sql);
 
 
 $sql = "SELECT value FROM ".PPHL_TBL_SETTINGS." WHERE setting = 'css'";
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 $adm_css = @mysqli_result($res,0,0);
 if (strstr($adm_css, '|')) {
 	$css_arr  = explode('|',$adm_css);
@@ -291,7 +291,7 @@ if (strstr($adm_css, '|')) {
 	$this_uid = 0;
 }
 $sql = "SELECT id FROM ".PPHL_TBL_CSS." WHERE userid = $this_uid AND css = '$this_css'";
-$res2 = mysqli_query($link, $sql);
+$res2 = mysqli_query($GLOBALS['mysql_link'], $sql);
 $this_cssid = @mysqli_result($res2,0,0);
 if(!$this_cssid) $this_cssid = 7;
 $sql = "UPDATE ".PPHL_TBL_SETTINGS." SET setting = 'cssid', value = '$this_cssid' WHERE setting = 'css'";
@@ -331,7 +331,7 @@ mysqli_qry($sql);
  * update user tables --------------------------------------------------------------------------------------------------------------
  */
 $sql = "SELECT id,username,qstr,index_files FROM ".PPHL_TBL_USERS." ORDER BY id ASC";
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	// get qstr and index_files for further use in pureURL()
@@ -344,7 +344,7 @@ while ($row = mysqli_fetch_array($res)) {
 	
 	// only perform this conversion if it hasn't been done yet!
 	$sql = "SELECT * FROM ".PPHL_TBL_CACHE." WHERE id = $id AND type = 'upd_222'";
-	$res2 = mysqli_query($link, $sql);
+	$res2 = mysqli_query($GLOBALS['mysql_link'], $sql);
 	if (!@mysqli_num_rows($res2)) {
 	
 		/* start updating user table... */
@@ -361,7 +361,7 @@ while ($row = mysqli_fetch_array($res)) {
 		
 		/* 'ok' was already dropped in 2.2.0 but was still remaining in tabledefinitions */
 		$sql = "ALTER TABLE $this_tbl_logs DROP ok";
-		@mysqli_query($link, $sql);
+		@mysqli_query($GLOBALS['mysql_link'], $sql);
 		
 		/* AUTO_INCREMENT id used in new pphlogger3 DB structure */
 		$sql = "ALTER TABLE $this_tbl_mpdl "
@@ -398,7 +398,7 @@ while ($row = mysqli_fetch_array($res)) {
 		$sql = "SELECT L.logid AS logid, I.ip AS ip, I.t_since as t_since "
 		     . "FROM $this_tbl_logs AS L, $this_tbl_ipcheck AS I "
 		     . "WHERE I.t_since = L.time AND I.ip = L.ip";
-		$res2 = mysqli_query($link, $sql);
+		$res2 = mysqli_query($GLOBALS['mysql_link'], $sql);
 		while ($row2 = mysqli_fetch_array($res2)) {
 			$sql2 = "UPDATE $this_tbl_ipcheck "
 			      . "SET logid = ".$row2['logid']." "
@@ -423,7 +423,7 @@ while ($row = mysqli_fetch_array($res)) {
 		$agent_convertion_start = getmicrotime();
 		$sql = "SELECT agent,COUNT(agent) AS hits FROM $this_tbl_logs WHERE agent > '' AND agentid IS NULL "
 		     . "GROUP BY agent ORDER BY hits DESC";
-		$res2 = mysqli_query($link, $sql);
+		$res2 = mysqli_query($GLOBALS['mysql_link'], $sql);
 		pphl_outp("updating agent id's... ");
 		while ($row2 = @mysqli_fetch_array($res2)) {
 			$agt_id = insert_agent(addslashes($row2['agent']), TRUE);
@@ -435,7 +435,7 @@ while ($row = mysqli_fetch_array($res)) {
 		
 		// remove deprecated rows
 		$sql = "SELECT * FROM $this_tbl_logs WHERE agent > '' AND agentid IS NULL";
-		$res2 = mysqli_query($link, $sql); // check if all agent-id's have been updated
+		$res2 = mysqli_query($GLOBALS['mysql_link'], $sql); // check if all agent-id's have been updated
 		if (!@mysqli_num_rows($res2)) {
 			$sql = "ALTER TABLE $this_tbl_logs "
 			     . "DROP agent, DROP browser, DROP version, DROP system";
@@ -460,7 +460,7 @@ while ($row = mysqli_fetch_array($res)) {
 		// convert all entrypoints to entryid's
 		$entrypoint_convertion_start = getmicrotime();
 		$sql = "SELECT DISTINCT entrypoint FROM $this_tbl_logs WHERE entryid = 0 OR entryid IS NULL";
-		$res2 = mysqli_query($link, $sql);
+		$res2 = mysqli_query($GLOBALS['mysql_link'], $sql);
 		pphl_outp("updating entrypoint id's... ");
 		while ($row2 = @mysqli_fetch_array($res2)) {
 			$entryid_url = pureURL($row2['entrypoint']);
@@ -472,7 +472,7 @@ while ($row = mysqli_fetch_array($res)) {
 		
 		// remove deprecated entrypoint row
 		$sql = "SELECT * FROM $this_tbl_logs WHERE entrypoint > '' AND (entryid = 0 OR entryid IS NULL)";
-		$res2 = mysqli_query($link, $sql); // check if all agent-id's have been updated
+		$res2 = mysqli_query($GLOBALS['mysql_link'], $sql); // check if all agent-id's have been updated
 		if (!@mysqli_num_rows($res2)) {
 			$sql = "ALTER TABLE $this_tbl_logs "
 			     . "DROP entrypoint";
@@ -508,7 +508,7 @@ while ($row = mysqli_fetch_array($res)) {
 		// convert all res to res_w/res_h
 		$res_convertion_start = getmicrotime();
 		$sql = "SELECT DISTINCT res FROM $this_tbl_logs";
-		$res2 = mysqli_query($link, $sql);
+		$res2 = mysqli_query($GLOBALS['mysql_link'], $sql);
 		pphl_outp("updating res id's... ");
 		while ($row2 = @mysqli_fetch_array($res2)) {
 			$res_arr = explode('x',$row2['res']);
@@ -532,7 +532,7 @@ while ($row = mysqli_fetch_array($res)) {
 		// if [full upgrade] was unchecked, delete all old visitor paths before starting to convert the most recent ones
 		if (!isset($full_upgrade)) {
 			$sql = "SELECT time FROM $this_tbl_logs WHERE path > '' ORDER BY time DESC LIMIT $keep_paths,1";
-			$res2 = mysqli_query($link, $sql);
+			$res2 = mysqli_query($GLOBALS['mysql_link'], $sql);
 			$delpath_from_time = @mysqli_result($res2,0,'time');
 			if ($delpath_from_time) {
 				$sql = "UPDATE $this_tbl_logs SET path = NULL WHERE path >= '' AND time < $delpath_from_time";
@@ -562,7 +562,7 @@ while ($row = mysqli_fetch_array($res)) {
 		// convert all paths
 		$path_convertion_start = getmicrotime();
 		$sql = "SELECT DISTINCT path_md5, path FROM $this_tbl_logs WHERE path > '' AND path_tmp IS NULL";
-		$res2 = mysqli_query($link, $sql);
+		$res2 = mysqli_query($GLOBALS['mysql_link'], $sql);
 		pphl_outp("updating path id's... ");
 		while ($row2 = @mysqli_fetch_array($res2)) {
 			$old_path_md5 = $row2['path_md5'];
@@ -599,7 +599,7 @@ while ($row = mysqli_fetch_array($res)) {
 	
 	/* move temporary path column to it's original place */
 	$sql = "ALTER TABLE $this_tbl_logs CHANGE path_tmp path TEXT";
-	mysqli_query($link, $sql);
+	mysqli_query($GLOBALS['mysql_link'], $sql);
 }
 
 /* TTF-fonts absolute path setting */
@@ -612,7 +612,7 @@ mysqli_qry($sql);
 
 /* change all calendar-cache to the new serialized format */
 $sql = "SELECT * FROM ".PPHL_TBL_CACHE." WHERE type IN ('log_day_mo','log_impr_day_mo')";
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = mysqli_fetch_array($res)) {
 	// only convert to serialized data if this hasn't been done yet
 	if (!@unserialize($row['cache'])) {
@@ -631,7 +631,7 @@ while ($row = mysqli_fetch_array($res)) {
  * extract agent information
  */
 $sql = "SELECT id,agent FROM ".PPHL_TBL_AGENTS." WHERE browser IS NULL";
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = mysqli_fetch_array($res)) {
 	$new_agt = extract_agent($row['agent']);
 	if (is_array($new_agt)) {

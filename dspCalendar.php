@@ -16,7 +16,7 @@ include MOD_CALENDAR;
  */
 if (@$action == 'cleanup' && $password == $pw) {
 	$sql = "DELETE FROM ".PPHL_TBL_CACHE." WHERE id=$id AND type='$uniq_type'";
-	$res = mysqli_query($link, $sql);
+	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 }
 
 /* reload visitors-per-hour
@@ -35,7 +35,7 @@ if (@$action == 'vph_reload') {
 			$sql .= " AND yyyymm=".$yyyymm;
 		}
 	}
-	if($sql) mysqli_query($link, $sql);
+	if($sql) mysqli_query($GLOBALS['mysql_link'], $sql);
 }
 
 /* update calendar
@@ -50,7 +50,7 @@ if (isset($show_impr)) {
 	$uniq_type = 'log_day_mo';
 }
 $sql = "SELECT * FROM ".PPHL_TBL_CACHE." WHERE type='$uniq_type' AND id=$id";
-$res = @mysqli_query($link, $sql);
+$res = @mysqli_query($GLOBALS['mysql_link'], $sql);
 $cache = mysqli_num_rows($res);
 if($cache) {
 	if ($cache_calendar == 0) echo update_calendar($uniq_type);

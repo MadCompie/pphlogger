@@ -23,13 +23,13 @@ $arr_engines = load_engines();
 
 //Load the updated pphlogger_domains table
 $sql = "DROP TABLE IF EXISTS ".PPHL_TBL_DOMAINS;
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 echo mysqli_error()."<br />";
 exec_sql_lines(SQL_DOMAINS, 'pph_domains', PPHL_TBL_DOMAINS);
 
 //Load the new pphlogger_cache table
 $sql = "SELECT COUNT(*) FROM ".PPHL_TBL_CACHE;
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 if (!$res) exec_sql_lines(SQL_CACHE, 'pphl_cache', PPHL_TBL_CACHE);
 
 
@@ -41,7 +41,7 @@ $sql = "UPDATE ".PPHL_TBL_USERS." SET conf='Y'";
 mysqli_qry($sql);
 
 $sql = "SELECT id FROM ".PPHL_TBL_USERS.";";
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	$sql = "ALTER TABLE ".PPHL_DB_PREFIX.$id.$tbl_mpdl." "
@@ -54,9 +54,9 @@ while ($row = mysqli_fetch_array($res)) {
 	
 	//load keywords
 	$sql_del = "DELETE FROM ".PPHL_DB_PREFIX.$id.$tbl_mpdl." WHERE type = 'kw'";
-	$res_del = mysqli_query($link, $sql_del);
+	$res_del = mysqli_query($GLOBALS['mysql_link'], $sql_del);
 	$sql_keyw = "SELECT referer FROM ".PPHL_DB_PREFIX.$id.$tbl_logs." WHERE referer LIKE '%?%'";
-	$res_keyw = mysqli_query($link, $sql_keyw);
+	$res_keyw = mysqli_query($GLOBALS['mysql_link'], $sql_keyw);
 	while ($row_keyw = mysqli_fetch_array($res_keyw)) {
 		$keywrd = show_keywords($row_keyw['referer'], $arr_engines);
 		if ($keywrd[3]) {

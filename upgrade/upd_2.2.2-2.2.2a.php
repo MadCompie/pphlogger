@@ -89,7 +89,7 @@ $agtid_empty = insert_agent('');
  * update user tables
  */
 $sql = "SELECT id,username FROM ".PPHL_TBL_USERS." ORDER BY id ASC";
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	$this_tbl_logs    = PPHL_DB_PREFIX.$id.$tbl_logs;
@@ -100,7 +100,7 @@ while ($row = mysqli_fetch_array($res)) {
 	
 	/* this INDEX was missing in a couple of previous versions... */
 	$sql = "CREATE INDEX tld_ind ON $this_tbl_logs (tld)";
-	mysqli_query($link, $sql);
+	mysqli_query($GLOBALS['mysql_link'], $sql);
 }
 
 // fixed type of mail_mod

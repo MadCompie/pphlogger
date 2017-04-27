@@ -16,7 +16,7 @@ include PPHL_SCRIPT_PATH.'config.inc.'.CFG_PHPEXT;
 
 /* check if 'pphlogger_' was used in old admin table names */
 $sql = "SELECT COUNT(*) FROM ".PPHL_DB_PREFIX_OLD."pphlogger_users";
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 $adm_special_prefix = ($res) ? 'pphlogger_' : ''; // 'pphlogger_' deprecated in 2.2.2
 
 /* old table-names */
@@ -35,11 +35,11 @@ $sql = "LOCK TABLES ".PPHL_TBL_SETTINGS_OLD.", ".
                      .PPHL_TBL_CACHE_OLD.",".
                      .PPHL_TBL_CSS_OLD.",".
                      .PPHL_TBL_AGENTS_OLD;
-mysqli_query($link, $sql);
+mysqli_query($GLOBALS['mysql_link'], $sql);
 
 function TblNameChange($from, $to) {
 	$sql = "ALTER TABLE $from RENAME AS $to";
-	$res = mysqli_query($link, $sql);
+	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 	if ($res) echo "$from --> $to<br>\n";
 }
 
@@ -53,7 +53,7 @@ TblNameChange(PPHL_TBL_AGENTS_OLD,   PPHL_TBL_AGENTS);
 
 
 $sql = "SELECT id FROM ".PPHL_TBL_USERS." ORDER BY id ASC";
-$res = mysqli_query($link, $sql);
+$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 while ($row = @mysqli_fetch_array($res)) {
 	
 	$id = $row['id'];
@@ -73,7 +73,7 @@ while ($row = @mysqli_fetch_array($res)) {
 }
 
 $sql = "UNLOCK TABLES";
-mysqli_query($link, $sql);
+mysqli_query($GLOBALS['mysql_link'], $sql);
 
 echo "<b>All table names changed successfully!</b><br>";
 echo "You can now close this window.";
