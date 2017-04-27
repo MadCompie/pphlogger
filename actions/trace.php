@@ -33,7 +33,7 @@ function validIP($ip) {
 	}
 }
 
-if (defined('PHP_OS') && preg_match('~win~i~', PHP_OS)) define('IS_WINDOWS', 1);
+if (defined('PHP_OS') && preg_match('~win~i', PHP_OS)) define('IS_WINDOWS', 1);
 else define('IS_WINDOWS', 0);
 
 // check if request came from the same host

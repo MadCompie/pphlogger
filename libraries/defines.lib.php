@@ -50,7 +50,7 @@ if (!defined('PHP_SESS')) {
 
 // Whether the os php is running on is windows or not
 if (!defined('IS_WINDOWS')) {
-    if (defined('PHP_OS') && preg_match('~win~i~', PHP_OS)) {
+    if (defined('PHP_OS') && preg_match('~win~i', PHP_OS)) {
         define('IS_WINDOWS', 1);
     } else {
         define('IS_WINDOWS', 0);

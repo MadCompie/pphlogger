@@ -43,7 +43,7 @@ function list_files($path) {
 		else $p = '';
 		$fd = $path.$p.$path_array[$i];
 		if (@is_dir($fd)) list_files($fd);
-		else if (preg_match('~\.'.$old_ext.'$~i~', $fd)) {
+		else if (preg_match('~\.'.$old_ext.'$~i', $fd)) {
 			$fd_new = substr($fd, 0, strlen($fd)-strlen($old_ext)).$new_ext;
 			rename ($fd, $fd_new); 
 			echo $fd.' >>> '.$fd_new.'<br />';
