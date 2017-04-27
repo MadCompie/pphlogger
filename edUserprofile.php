@@ -176,7 +176,7 @@ if($GD_enabled) {
 					} else {
 						if ($select_array[$i] == $ttf_file) print "selected=\"selected\"";
 					}
-					print "value=\"".$select_array[$i]."\">".strtolower(eregi_replace('.ttf','',$select_array[$i]))."</option>\n";
+					print "value=\"".$select_array[$i]."\">".strtolower(preg_replace('/.ttf/i','',$select_array[$i]))."</option>\n";
 				}
 				print "</select>";
 ?>
