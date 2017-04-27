@@ -5,6 +5,6 @@ define('PPHL_SCRIPT_PATH', '../');
 include PPHL_SCRIPT_PATH."main_location.inc";
 
 $sql = "UPDATE ".PPHL_TBL_SETTINGS." SET value = $N_css WHERE setting = 'cssid'";
-$res = mysql_query($sql);
+$res = mysqli_query($link, $sql);
 Header("Location: $HTTP_REFERER");
 ?>

@@ -9,11 +9,11 @@ include INC_GETUSERDATA;
 
 if ($pw_check == $admin_pw) {
 	$sql = "DELETE FROM ".PPHL_TBL_USERS." WHERE id = ".$id;
-	$res = mysql_query($sql);
+	$res = mysqli_query($link, $sql);
 	$sql = "DROP TABLE IF EXISTS ".$tbl_logs.", ".$tbl_mpdl;
-	$res = mysql_query($sql);
+	$res = mysqli_query($link, $sql);
 	$sql = "DELETE FROM ".PPHL_TBL_CACHE." WHERE id = ".$id;
-	$res = mysql_query($sql);
+	$res = mysqli_query($link, $sql);
 	Header("Location: $adm_view[1]?deleted=1");
 	exit;
 } else {

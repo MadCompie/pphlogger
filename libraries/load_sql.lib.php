@@ -95,7 +95,7 @@ function exec_sql_lines($sql_file, $old_string = '', $new_string = '') {
 		/* run multiple queries */
 		for ($i=0; $i<$cnt_pieces; $i++) {
 			$sql = trim($pieces[$i]);
-			if (!empty($sql) and $sql[0] != "#") $result = mysql_query($sql);
+			if (!empty($sql) and $sql[0] != "#") $result = mysqli_query($link, $sql);
 		}
 	}
 	return true;

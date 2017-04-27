@@ -16,7 +16,7 @@ define('PPHL_SCRIPT_PATH', '../');
 include PPHL_SCRIPT_PATH."main_location.inc";
 
 $sql = "ALTER TABLE ".PPHL_TBL_USERS." ADD demo enum('Y','N') DEFAULT 'N' NOT NULL;";
-mysql_qry($sql);
+mysqli_qry($sql);
 
 echo $br.$br."<b>your update to v.2.0.9 was successful!</b>";
 echo $br."Now, please run the next upgrade script: <a href=\"upd_2.0.9-2.1.0.".CFG_PHPEXT."\">upd_2.0.9-2.1.0.".CFG_PHPEXT."</a>";

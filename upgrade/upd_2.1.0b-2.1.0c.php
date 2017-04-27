@@ -18,7 +18,7 @@ include PPHL_SCRIPT_PATH."main_location.inc";
 
 $sql = "ALTER TABLE ".PPHL_TBL_USERS." "
      . "ADD lang char(2) DEFAULT 'en' NOT NULL;"; //change the DEFAULT value to your default language
-mysql_qry($sql);
+mysqli_qry($sql);
 
 echo $br."<b>Your upgrade to v.2.1.0c was successful!</b>";
 echo $br."Now, please run the next upgrade script: <a href=\"upd_2.1.0c-2.1.1.".CFG_PHPEXT."\"'>upd_2.1.0c-2.1.1.".CFG_PHPEXT."</a>";

@@ -19,11 +19,11 @@ include PPHL_SCRIPT_PATH."main_location.inc";
 $sql = "ALTER TABLE ".PPHL_TBL_USERS." "
      . "CHANGE ipblock ipblock text, "
 	 . "CHANGE your_url your_url text";
-mysql_qry($sql);
+mysqli_qry($sql);
 
 $sql = "ALTER TABLE ".PPHL_TBL_CACHE." "
 	 . "CHANGE cache cache text";
-mysql_qry($sql);
+mysqli_qry($sql);
 
 echo $br.$br."<b>Your upgrade to v.2.1.4d was successful!</b>";
 echo $br."Now, please run the next upgrade script: <a href='upd_2.1.4d-2.2.0.".CFG_PHPEXT."'>upd_2.1.4d-2.2.0.".CFG_PHPEXT."</a>";

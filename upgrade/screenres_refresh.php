@@ -24,24 +24,24 @@ include PPHL_SCRIPT_PATH."main_location.inc";
 $new_res = '';
 
 $sql = "SELECT id FROM ".PPHL_TBL_USERS;
-$res = mysql_query($sql);
-while ($row = mysql_fetch_array($res)) {
+$res = mysqli_query($link, $sql);
+while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	$sql = "ALTER TABLE ".PPHL_DB_PREFIX.$id.$tbl_logs." "
 		 . "CHANGE res res VARCHAR(9)";
-	mysql_qry($sql);
+	mysqli_qry($sql);
 	$sql = "SELECT logid,res FROM ".PPHL_DB_PREFIX.$id.$tbl_logs." "
 	     . "WHERE LOCATE('x',res) = 0 AND res > '0'";
-	$res2 = mysql_qry($sql);
+	$res2 = mysqli_qry($sql);
 	flush();
-	while ($row2 = mysql_fetch_array($res2)) {
+	while ($row2 = mysqli_fetch_array($res2)) {
 		$new_res = full_screenres($row2['res']);
 		if ($new_res != '') {
 			$agt_sql = "UPDATE ".PPHL_DB_PREFIX.$id.$tbl_logs." "
 			         . "SET time=time, "
 					 . "res = '".$new_res."' "
 					 . "WHERE logid = ".$row2['logid'];
-			mysql_qry($agt_sql,false);
+			mysqli_qry($agt_sql,false);
 			$new_res = '';
 		}
 	}

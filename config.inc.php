@@ -55,18 +55,23 @@ if (!defined('__GOT_MYSQL__')){
 	//-------------------------------------------------------------------------------
 	
 	/* connect to mySQL database */
-	$cfunction = (PPHL_DB_PERSISTENT) ? 'mysql_pconnect' : 'mysql_connect';
-	if(!function_exists($cfunction)) die('MySQL support is not available in this PHP configuration!');
+#	$cfunction = (PPHL_DB_PERSISTENT) ? 'mysqli_pconnect' : 'mysqli_connect';
+	# mysqli_pconnect does not exist
+	$cfunction = 'mysqli_connect';
+	if(!function_exists($cfunction)) die('MySQLi support is not available in this PHP configuration!');
 	function str_is_int($str) {
 		$var = intval($str);
 		return ("$str" == "$var");
 	}
-	$mysql_port = (str_is_int(PPHL_DB_PORT)) ? ':'.PPHL_DB_PORT : '';
-	$connected = @$cfunction(PPHL_DB_HOST.$mysql_port, PPHL_DB_USER, PPHL_DB_PWD)
+	$mysqli_port = (str_is_int(PPHL_DB_PORT)) ? ':'.PPHL_DB_PORT : '';
+
+	global $link;
+	$link = @$cfunction(PPHL_DB_HOST.$mysqli_port, PPHL_DB_USER, PPHL_DB_PWD, PPHL_DB_NAME)
 	 or die("unable to connect to database on '".PPHL_DB_HOST."' with user '".PPHL_DB_USER."'<br />".
-	        '('.mysql_errno().') '.mysql_error().'<br />'.
+	        '('.mysqli_errno().') '.mysqli_error().'<br />'.
 			"Please check your settings in config.inc.php !<br />");
-	mysql_select_db(PPHL_DB_NAME) or die("Please first create your database '".PPHL_DB_NAME."' and make sure your user got the correct access rights on it !"); ;
+# Part of mysqli_connect
+#	mysqli_select_db(PPHL_DB_NAME) or die("Please first create your database '".PPHL_DB_NAME."' and make sure your user got the correct access rights on it !"); ;
 	
 define('__GOT_MYSQL__', 1);
 }

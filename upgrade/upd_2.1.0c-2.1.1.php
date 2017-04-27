@@ -23,41 +23,41 @@ $arr_engines = load_engines();
 
 //Load the updated pphlogger_domains table
 $sql = "DROP TABLE IF EXISTS ".PPHL_TBL_DOMAINS;
-$res = mysql_query($sql);
-echo mysql_error()."<br />";
+$res = mysqli_query($link, $sql);
+echo mysqli_error()."<br />";
 exec_sql_lines(SQL_DOMAINS, 'pph_domains', PPHL_TBL_DOMAINS);
 
 //Load the new pphlogger_cache table
 $sql = "SELECT COUNT(*) FROM ".PPHL_TBL_CACHE;
-$res = mysql_query($sql);
+$res = mysqli_query($link, $sql);
 if (!$res) exec_sql_lines(SQL_CACHE, 'pphl_cache', PPHL_TBL_CACHE);
 
 
 $sql = "ALTER TABLE ".PPHL_TBL_USERS." "
      . "ADD conf enum('Y','N') DEFAULT 'N' NOT NULL, "
 	 . "CHANGE date_start date_start DATETIME NOT NULL";
-mysql_qry($sql);
+mysqli_qry($sql);
 $sql = "UPDATE ".PPHL_TBL_USERS." SET conf='Y'";
-mysql_qry($sql);
+mysqli_qry($sql);
 
 $sql = "SELECT id FROM ".PPHL_TBL_USERS.";";
-$res = mysql_query($sql);
-while ($row = mysql_fetch_array($res)) {
+$res = mysqli_query($link, $sql);
+while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	$sql = "ALTER TABLE ".PPHL_DB_PREFIX.$id.$tbl_mpdl." "
 		 . "CHANGE type type enum('mp','dl','kw') DEFAULT 'mp' NOT NULL";
-	mysql_qry($sql);
+	mysqli_qry($sql);
 	
 	$sql = "ALTER TABLE ".PPHL_DB_PREFIX.$id.$tbl_ipcheck." "
 	     . "ADD hostname varchar(150) NOT NULL AFTER ip;";
-	mysql_qry($sql);
+	mysqli_qry($sql);
 	
 	//load keywords
 	$sql_del = "DELETE FROM ".PPHL_DB_PREFIX.$id.$tbl_mpdl." WHERE type = 'kw'";
-	$res_del = mysql_query($sql_del);
+	$res_del = mysqli_query($link, $sql_del);
 	$sql_keyw = "SELECT referer FROM ".PPHL_DB_PREFIX.$id.$tbl_logs." WHERE referer LIKE '%?%'";
-	$res_keyw = mysql_query($sql_keyw);
-	while ($row_keyw = mysql_fetch_array($res_keyw)) {
+	$res_keyw = mysqli_query($link, $sql_keyw);
+	while ($row_keyw = mysqli_fetch_array($res_keyw)) {
 		$keywrd = show_keywords($row_keyw['referer'], $arr_engines);
 		if ($keywrd[3]) {
 			insert_mpdl($keywrd[3], 'kw', PPHL_DB_PREFIX.$id.$tbl_mpdl)."<br />";

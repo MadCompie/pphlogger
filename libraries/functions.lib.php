@@ -11,8 +11,8 @@
   get mySQL Version for meta-tag information
   --------------------------------------------------*/
 function mysqlversion() {
-	$res = mysql_query("SELECT Version() as version");
-	$version = mysql_fetch_array($res);
+	$res = mysqli_query($link, "SELECT Version() as version");
+	$version = mysqli_fetch_array($res);
 	return $version['version'];
 }
 
@@ -21,14 +21,14 @@ function mysqlversion() {
   gets executed on termination by register_shutdown
   --------------------------------------------------*/
 function pphlShutdown() {
-	@mysql_close();
+	@mysqli_close();
 }
 
 function getPPhlVersion() {
 	
 	$sql = "SELECT cache FROM ".PPHL_TBL_CACHE." WHERE type = 'curr_ver'";
-	$res = mysql_query($sql);
-	return @mysql_result($res,0,0);
+	$res = mysqli_query($link, $sql);
+	return @mysqli_result($res,0,0);
 }
 
 /*--------------------------------------------------
@@ -55,8 +55,8 @@ function createID() { // create a new random-ID
   --------------------------------------------------*/
 function check_if_exists($id) {
 	
-	$res = mysql_query("SELECT id FROM ".PPHL_TBL_USERS." WHERE id=".$id.";");
-	if (@mysql_num_rows($res)) return true;
+	$res = mysqli_query($link, "SELECT id FROM ".PPHL_TBL_USERS." WHERE id=".$id.";");
+	if (@mysqli_num_rows($res)) return true;
 	else return false;
 }
 
@@ -283,8 +283,8 @@ function newPw($username,$email,$newPw = '') {
 	if($newPw == '') $newPw = randPw($pass_length);
 	$md5pw = md5($newPw);
 	$sql = "UPDATE ".PPHL_TBL_USERS." SET pw='$md5pw' WHERE username='$username' AND email='$email'";
-	$res = mysql_query($sql);
-	if (mysql_affected_rows()) {
+	$res = mysqli_query($link, $sql);
+	if (mysqli_affected_rows()) {
 		$subject = "PPhlogger password change for $username";
 		$headers = getMailheader($admin_mail);
 		$headers .= "X-Priority: 1\r\n";
@@ -489,22 +489,22 @@ function insert_mpdl ($url, $type = 'mp', $table = false, $title = '', $update =
 	$title  = addslashes_mq($title);
 	
 	$sql = "SELECT id, enabled FROM $table WHERE type = '".$type."' AND url = '".$url."'";
-	$res = mysql_query($sql);
-	if (!mysql_num_rows($res)) {
+	$res = mysqli_query($link, $sql);
+	if (!mysqli_num_rows($res)) {
 		$sql2 = "INSERT INTO $table (enabled,type,url,since,title) VALUES ($active,'$type','$url',$curr_gmt_time,'$title')";
-		$res2 = mysql_query($sql2);
-		return mysql_insert_id();
+		$res2 = mysqli_query($link, $sql2);
+		return mysqli_insert_id();
 	} else {
 		if($update) {
-			$enabled = mysql_result($res,0,1);
+			$enabled = mysqli_result($res,0,1);
 			$new_hits = ($enabled) ? 'hits+1' : '1, enabled = 1';
 			$sql2 = "UPDATE $table SET hits = $new_hits";
 			// only update title if there is a title (if called by php, there is no title-string!)
 			if ($title != '') $sql2 .= ", title='".$title."'";
 			$sql2 .= " WHERE type = '".$type."' AND url = '".$url."'";
-			$res2 = mysql_query($sql2);
+			$res2 = mysqli_query($link, $sql2);
 		}
-		return mysql_result($res,0,0);
+		return mysqli_result($res,0,0);
 	}
 }
 
@@ -515,7 +515,7 @@ function mpdl_setTitle ($url, $title) {
 	
 	if ($title != '') {
 		$sql = "UPDATE $tbl_mpdl SET title = '$title' WHERE url = '$url' AND type = 'mp'";
-		mysql_query($sql);
+		mysqli_query($link, $sql);
 	}
 }
 
@@ -529,13 +529,13 @@ function insert_res ($w, $h) {
 	global $tbl_res;
 	
 	$sql = "SELECT id FROM $tbl_res WHERE width = $w AND height = $h";
-	$res = mysql_query($sql);
-	if (!mysql_num_rows($res)) {
+	$res = mysqli_query($link, $sql);
+	if (!mysqli_num_rows($res)) {
 		$sql2 = "INSERT INTO $tbl_res (width,height) VALUES ($w,$h)";
-		$res2 = mysql_query($sql2);
-		return mysql_insert_id();
+		$res2 = mysqli_query($link, $sql2);
+		return mysqli_insert_id();
 	} else {
-		return mysql_result($res,0,0);
+		return mysqli_result($res,0,0);
 	}
 }
 
@@ -547,8 +547,8 @@ function insert_res ($w, $h) {
 function insert_agent ($agt, $extract = false) {
 	
 	$sql = "SELECT id FROM ".PPHL_TBL_AGENTS." WHERE agent = '".$agt."'";
-	$res = mysql_query($sql);
-	if (!@mysql_num_rows($res)) {
+	$res = mysqli_query($link, $sql);
+	if (!@mysqli_num_rows($res)) {
 		if ($extract) {
 			$new_agt = extract_agent($agt);
 			if (is_array($new_agt)) {
@@ -560,10 +560,10 @@ function insert_agent ($agt, $extract = false) {
 		} else {
 			$sql2 = "INSERT INTO ".PPHL_TBL_AGENTS." (agent) VALUES ('$agt')";
 		}
-		$res2 = mysql_query($sql2);
-		return mysql_insert_id();
+		$res2 = mysqli_query($link, $sql2);
+		return mysqli_insert_id();
 	} else {
-		return mysql_result($res,0,0);
+		return mysqli_result($res,0,0);
 	}
 }
 
@@ -744,11 +744,11 @@ function getSerializedCache($type, $cache_secs = 0, $yyyymm = 0) {
 	$sql = "SELECT yyyymm,cache,time FROM ".PPHL_TBL_CACHE." WHERE id=$id AND type='$type'";
 	if ($cache_secs > 0) $sql .= " AND ($curr_gmt_time-time) < $cache_secs";
 	$sql .= ($yyyymm) ? " AND yyyymm = $yyyymm" : " ORDER BY yyyymm DESC";
-	$res = mysql_query($sql);
-	if(@mysql_num_rows($res)) {
-		$cache[0] = mysql_result($res,0,'time');   //timestamp
-		$cache[1] = @unserialize(stripslashes(mysql_result($res,0,'cache')));  //cache
-		$cache[2] = mysql_result($res,0,'yyyymm'); //yyyymm
+	$res = mysqli_query($link, $sql);
+	if(@mysqli_num_rows($res)) {
+		$cache[0] = mysqli_result($res,0,'time');   //timestamp
+		$cache[1] = @unserialize(stripslashes(mysqli_result($res,0,'cache')));  //cache
+		$cache[2] = mysqli_result($res,0,'yyyymm'); //yyyymm
 		return $cache;
 	} else {
 		return false;
@@ -766,12 +766,12 @@ function putSerializedCache($type, $cache, $id = 0, $yyyymm = 0) {
 	$sCache = addslashes(serialize($cache));
 	
 	$sql = "UPDATE ".PPHL_TBL_CACHE." SET cache='".$sCache."', time=$curr_gmt_time WHERE id=$id AND type='$type' AND yyyymm=$yyyymm";
-	$res = mysql_query($sql);
-	if (mysql_affected_rows()) {
+	$res = mysqli_query($link, $sql);
+	if (mysqli_affected_rows()) {
 		return true;
 	} else {
 		$sql = "INSERT INTO ".PPHL_TBL_CACHE." (id,type,yyyymm,cache,time) VALUES ($id,'$type',$yyyymm,'".$sCache."',$curr_gmt_time)";
-		mysql_query($sql);
+		mysqli_query($link, $sql);
 		return false;
 	}
 }
@@ -805,14 +805,14 @@ function create_vis_per_month($Year = 0,$Month = 0,$uniq_type = 'log_day_mo') {
 			
 			if (!$finished) {
 				$sql  = "SELECT $uniq_sql AS D FROM $tbl_logs WHERE time BETWEEN $my_day AND ($my_day+86400)";
-				$res = mysql_query($sql);
-				$cache_arr[$i-1] = mysql_result($res,0,0);
+				$res = mysqli_query($link, $sql);
+				$cache_arr[$i-1] = mysqli_result($res,0,0);
 				$got_first = true;
 			}
 		}
 	}
 	$sql = "DELETE FROM ".PPHL_TBL_CACHE." WHERE id=$id AND type='$uniq_type' AND yyyymm=$yyyymm";
-	$res = @mysql_query($sql);
+	$res = @mysqli_query($link, $sql);
 	putSerializedCache($uniq_type, $cache_arr, $id, $yyyymm);
 	
 	$outp[0] = $curr_gmt_time; //timestamp
@@ -859,10 +859,10 @@ function getMpArr($tbl = '') {
 	$tbl = ($tbl != '') ? $tbl : $tbl_mpdl;
 	
 	$sql = "SELECT enabled,id,url,title,hits FROM $tbl WHERE type='mp' ORDER BY enabled DESC, hits DESC";
-	$res = mysql_query($sql);
+	$res = mysqli_query($link, $sql);
 	$m = 1;
 	$mpArr = array();
-	while ($row = mysql_fetch_array($res)) {
+	while ($row = mysqli_fetch_array($res)) {
 		$mpArr[$m]['enabled'] = $row['enabled'];
 		$mpArr[$m]['id']      = $row['id'];
 		$mpArr[$m]['url']     = $row['url'];
@@ -879,9 +879,9 @@ function getMpArr_short($tbl = '') {
 	$tbl = ($tbl != '') ? $tbl : $tbl_mpdl;
 	
 	$sql = "SELECT id,url FROM $tbl WHERE type='mp' ORDER BY enabled DESC, hits DESC";
-	$res = mysql_query($sql);
+	$res = mysqli_query($link, $sql);
 	$mpArr = array();
-	while ($row = mysql_fetch_array($res)) {
+	while ($row = mysqli_fetch_array($res)) {
 		$mpArr[addslashes($row['url'])] = $row['id'];
 	}
 	return $mpArr;
@@ -946,10 +946,10 @@ function get_mp_last($path) {
 function getUseridArr() {
 	
 	$sql = "SELECT id FROM ".PPHL_TBL_USERS;
-	$res = mysql_query($sql);
-	if (@mysql_num_rows($res)) {
+	$res = mysqli_query($link, $sql);
+	if (@mysqli_num_rows($res)) {
 		$UseridArr = array();
-		while ($row = mysql_fetch_array($res)) {
+		while ($row = mysqli_fetch_array($res)) {
 			$UseridArr[] = (int) $row[0];
 		}
 		return $UseridArr;
@@ -1049,21 +1049,21 @@ function isInArray($needle,$haystack) {
 }
 
 /*--------------------------------------------------
-  mysql_qry()
+  mysqli_qry()
   This function is used in several upgrade scripts.
   It just runs a mysql-query and echoes it.
   --------------------------------------------------*/
-function mysql_qry($sql,$with_outp = TRUE) {
-	global $br, $mysql_outp;
+function mysqli_qry($sql,$with_outp = TRUE) {
+	global $br, $mysqli_outp;
 	
 	//DEBUG: $sql_start = getmicrotime();
 	
-	$res = mysql_query($sql);
-	//if ($res != true) mysql_free_result($res);
-	if (($with_outp && $mysql_outp) || mysql_error())
+	$res = mysqli_query($link, $sql);
+	//if ($res != true) mysqli_free_result($res);
+	if (($with_outp && $mysqli_outp) || mysqli_error())
 		pphl_outp($sql.$br);
-	if (mysql_error())
-		pphl_outp("<b>warning: ".mysql_error()."</b>".$br);
+	if (mysqli_error())
+		pphl_outp("<b>warning: ".mysqli_error()."</b>".$br);
 	
 	//DEBUG: $time = getmicrotime()-$sql_start;
 	//DEBUG: $str_time = ($time > 2) ? '<b>'.$time.'</b>' : $time;
@@ -1096,14 +1096,14 @@ function pphl_outp($str, $with_echo = FALSE) {
 function get_totalrows($table,$logs_from = 0, $logs_to = 0) {
 	$sql = "SELECT count(*) AS total FROM ".$table;
 	if($logs_from != 0) $sql .= " WHERE time > ".UserToGMT($logs_from)." AND time < (".UserToGMT($logs_to)."+86400)";
-	$res = mysql_query($sql);
-	return mysql_result($res,0,'total');
+	$res = mysqli_query($link, $sql);
+	return mysqli_result($res,0,'total');
 }
 
 function get_tbltotalrows($table) {
 	$sql = "SELECT count(*) AS total FROM ".$table;
-	$res = mysql_query($sql);
-	return mysql_result($res,0,'total');
+	$res = mysqli_query($link, $sql);
+	return mysqli_result($res,0,'total');
 }
 
 
@@ -1113,8 +1113,8 @@ function get_tbltotalrows($table) {
   --------------------------------------------------*/
 function get_total_activeUser() {
 	$sql = "SELECT count(*) AS total FROM ".PPHL_TBL_USERS." WHERE conf = 1 AND del_usr = 0";
-	$res = mysql_query($sql);
-	return mysql_result($res,0,'total');
+	$res = mysqli_query($link, $sql);
+	return mysqli_result($res,0,'total');
 }
 
 
@@ -1219,10 +1219,10 @@ function getHEX($mycolor) {
   returns them as an array
   --------------------------------------------------------*/
 function getTableFields($tbl) {
-	$res = mysql_list_fields(PPHL_DB_NAME, $tbl);
-	$cnt_fields = mysql_num_fields($res);
+	$res = mysqli_list_fields(PPHL_DB_NAME, $tbl);
+	$cnt_fields = mysqli_num_fields($res);
 	for($i = 0; $i < $cnt_fields; $i++)
-		$fields[$i] = mysql_field_name($res, $i);
+		$fields[$i] = mysqli_field_name($res, $i);
 	return $fields;
 }
 
@@ -1237,8 +1237,8 @@ function get_logid($ip) {
 	     . "WHERE ip='".$ip."' "
 		 . "AND t_reload > ".($curr_gmt_time-$timeout)." "
 		 . "ORDER BY t_reload DESC LIMIT 1";
-	$res = mysql_query($sql);
-	$logid = @mysql_result($res,0,'logid');
+	$res = mysqli_query($link, $sql);
+	$logid = @mysqli_result($res,0,'logid');
 	
 	return $logid;
 }
@@ -1252,8 +1252,8 @@ function get_online_users() {
 	$onlUsers = array(); $o = 0;
 	$sql = "SELECT logid FROM ".$tbl_logs." "
 	     . "WHERE t_reload > ".($curr_gmt_time-$timeout_onl);
-	$res = mysql_query($sql);
-	while ($row = mysql_fetch_array($res)) {
+	$res = mysqli_query($link, $sql);
+	while ($row = mysqli_fetch_array($res)) {
 		$onlUsers[$o] = $row['logid'];
 		$o++;
 	}
@@ -1268,8 +1268,8 @@ function getNewPath($id,$logid) {
 	global $tbl_logs;
 	
 	$sql = "SELECT path FROM $tbl_logs WHERE logid = $logid";
-	$res = mysql_query($sql);
-	$path = @mysql_result($res,0,'path');
+	$res = mysqli_query($link, $sql);
+	$path = @mysqli_result($res,0,'path');
 	$path_arr = explode('|',$path);
 	
 	if($id != $path_arr[count($path_arr)-1]) {
@@ -1541,11 +1541,11 @@ function calcTableSize($id = 0) {
 	if (MYSQL_INT_VERSION >= 32303) {
 		$qry = 'SHOW TABLE STATUS FROM `'.PPHL_DB_NAME.'`';
 		if ($id != 0) $qry .= " LIKE '".PPHL_DB_PREFIX.$id."%'";
-		$res = @mysql_query($qry);
+		$res = @mysqli_query($link, $qry);
 		// set all tablsize to 0. We're going to calculate everything new
-		if (@mysql_num_rows($res) && $id == 0) {
+		if (@mysqli_num_rows($res) && $id == 0) {
 			$sql = "UPDATE ".PPHL_TBL_USERS." SET tblsize = 0";
-			$res2 = mysql_query($sql);
+			$res2 = mysqli_query($link, $sql);
 		}
 		
 		// total Bytes used for admin-tables
@@ -1553,7 +1553,7 @@ function calcTableSize($id = 0) {
 		
 		
 		// get the tblsize in bytes from every table.
-		while ($row = mysql_fetch_array($res)) {
+		while ($row = mysqli_fetch_array($res)) {
 			$table     = $row['Name'];
 			
 			$mergetable         = FALSE;
@@ -1575,7 +1575,7 @@ function calcTableSize($id = 0) {
 							$this_id = (int)(substr($table,strlen(PPHL_DB_PREFIX),5));
 							if ($id == 0) { // only update all user table sizes if id is not set (performance!)
 								$sql = "UPDATE ".PPHL_TBL_USERS." SET tblsize = tblsize+$this_tblsize WHERE id = $this_id";
-								mysql_query($sql);
+								mysqli_query($link, $sql);
 							} else if ($this_id == $id) { // if id is set, get the user's detailed tbl sizes
 								$usr_tblsize[] = Array($table, $this_tblsize);
 							}
@@ -1587,7 +1587,7 @@ function calcTableSize($id = 0) {
 				}
 			}
 		}
-		@mysql_free_result($res);
+		@mysqli_free_result($res);
 		
 		// store the total admin tblsize in the caching table
 		if ($id == 0)             putSerializedCache('admin_tblsize', $admin_tblsize    );
@@ -1605,9 +1605,9 @@ function optimizeUsrTables($id) {
 	global $tbl_logs, $tbl_mpdl;
 	
 	$sql = 'OPTIMIZE TABLE '.PPHL_DB_PREFIX.$id.$tbl_logs;
-	mysql_query($sql);
+	mysqli_query($link, $sql);
 	$sql = 'OPTIMIZE TABLE '.PPHL_DB_PREFIX.$id.$tbl_mpdl;
-	mysql_query($sql);
+	mysqli_query($link, $sql);
 	
 	return TRUE;
 }
@@ -1619,13 +1619,13 @@ function optimizeUsrTables($id) {
 function optimizeAdmTables() {
 	
 	$sql = 'OPTIMIZE TABLE '.PPHL_TBL_CACHE;
-	mysql_query($sql);
+	mysqli_query($link, $sql);
 	$sql = 'OPTIMIZE TABLE '.PPHL_TBL_USERS;
-	mysql_query($sql);
+	mysqli_query($link, $sql);
 	$sql = 'OPTIMIZE TABLE '.PPHL_TBL_USERLOG;
-	mysql_query($sql);
+	mysqli_query($link, $sql);
 	$sql = 'OPTIMIZE TABLE '.PPHL_TBL_CSS;
-	mysql_query($sql);
+	mysqli_query($link, $sql);
 	
 	return TRUE;
 }
@@ -1660,23 +1660,23 @@ function resetCssIDs() {
 	
 	// restore cssid in pphl_settings
 	$sql = "SELECT value FROM ".PPHL_TBL_SETTINGS." WHERE setting = 'cssid'";
-	$res = mysql_query($sql);
-	$cssid_setting = mysql_result($res, 0, 0);
+	$res = mysqli_query($link, $sql);
+	$cssid_setting = mysqli_result($res, 0, 0);
 	$sql = "SELECT * FROM ".PPHL_TBL_CSS." WHERE id = $cssid_setting AND userid = 0";
-	$res = mysql_query($sql);
-	if (!@mysql_num_rows($res)) { // if cssid in pphl is not valid, choose first id in pphl_css
+	$res = mysqli_query($link, $sql);
+	if (!@mysqli_num_rows($res)) { // if cssid in pphl is not valid, choose first id in pphl_css
 		$sql = "SELECT id FROM ".PPHL_TBL_CSS." WHERE userid = 0";
-		$res2 = mysql_query($sql);
-		$cssid_setting = mysql_result($res2, 0, 0);
+		$res2 = mysqli_query($link, $sql);
+		$cssid_setting = mysqli_result($res2, 0, 0);
 		$sql = "UPDATE ".PPHL_TBL_SETTINGS." SET value = '$cssid_setting' WHERE setting = 'cssid'";
-		$res2 = mysql_query($sql);
+		$res2 = mysqli_query($link, $sql);
 	}
 	
 	// restore cssid in pphl_users
 	$sql = "SELECT DISTINCT cssid FROM ".PPHL_TBL_USERS.", ".PPHL_TBL_CSS." C WHERE cssid = C.id";
-	$res = mysql_query($sql);
+	$res = mysqli_query($link, $sql);
 	$i = 0; $in = '';
-	while ($row = @mysql_fetch_array($res)) {
+	while ($row = @mysqli_fetch_array($res)) {
 		if ($i > 0) $in .= ',';
 		$in .= $row[0];
 		$i++;
@@ -1686,16 +1686,16 @@ function resetCssIDs() {
 	} else {
 		$sql = "SELECT DISTINCT cssid FROM ".PPHL_TBL_USERS;
 	}
-	$res = mysql_query($sql);
+	$res = mysqli_query($link, $sql);
 	$i = 0; $in = '';
-	while ($row = @mysql_fetch_array($res)) {
+	while ($row = @mysqli_fetch_array($res)) {
 		if ($i > 0) $in .= ',';
 		$in .= $row[0];
 		$i++;
 	}
 	if ($in) {
 		$sql = "UPDATE ".PPHL_TBL_USERS." SET cssid = $cssid_setting WHERE cssid IN ($in)";
-		$res = mysql_query($sql);
+		$res = mysqli_query($link, $sql);
 	}
 	
 	return $cssid_setting;
@@ -1736,7 +1736,7 @@ function _unlink($file) {
   Check for existence of a table
   --------------------------------------------------*/
 function tableExists($tbl) {
-	$res = @mysql_query("SELECT COUNT(*) FROM $tbl");
+	$res = @mysqli_query($link, "SELECT COUNT(*) FROM $tbl");
 	if (!$res) return FALSE;
 	else       return TRUE;
 }

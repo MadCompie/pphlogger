@@ -29,7 +29,7 @@ $sql = "ALTER TABLE ".PPHL_TBL_USERS." "
 	 . "ADD css varchar(30) DEFAULT 'phpeestyle.css' NOT NULL, "
 	 . "ALTER timeout SET DEFAULT '1800', "
 	 . "ALTER max_file_size_kb SET DEFAULT '300'";
-mysql_qry($sql);
+mysqli_qry($sql);
 
 echo $br.$br."<b>your update to v.2.1.0 was successful!</b>";
 echo $br."Now, please run the next upgrade script: <a href=\"upd_2.1.0-2.1.0b.".CFG_PHPEXT."\">upd_2.1.0-2.1.0b.".CFG_PHPEXT."</a>";

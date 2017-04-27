@@ -24,20 +24,20 @@ define('PPHL_SCRIPT_PATH', '../');
 include PPHL_SCRIPT_PATH."main_location.inc";
 
 $sql = "SELECT id FROM ".PPHL_TBL_USERS;
-$res = mysql_query($sql);
-while ($row = mysql_fetch_array($res)) {
+$res = mysqli_query($link, $sql);
+while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	$sql = "ALTER TABLE ".PPHL_DB_PREFIX.$id.$tbl_logs." "
 		 . "ADD browser varchar(8) NOT NULL AFTER agent, "
 		 . "ADD version varchar(8) NOT NULL AFTER browser, "
 		 . "ADD system varchar(15) NOT NULL AFTER version, "
 		 . "CHANGE res res VARCHAR(9)";
-	mysql_qry($sql);
+	mysqli_qry($sql);
 	$sql = "SELECT logid,agent FROM ".PPHL_DB_PREFIX.$id.$tbl_logs." "
 	     . "WHERE browser IS NULL";
 	echo $sql.$br; flush();
-	$res2 = mysql_query($sql);
-	while ($row2 = mysql_fetch_array($res2)) {
+	$res2 = mysqli_query($link, $sql);
+	while ($row2 = mysqli_fetch_array($res2)) {
 		$new_agt = extract_agent($row2['agent']);
 		if (is_array($new_agt)) {
 			$agt_sql = "UPDATE ".PPHL_DB_PREFIX.$id.$tbl_logs." "
@@ -46,22 +46,22 @@ while ($row = mysql_fetch_array($res)) {
 					 . "version = '".$new_agt[1]."', "
 					 . "system = '".$new_agt[3]."' "
 					 . "WHERE logid = '".$row2['logid']."'";
-			mysql_query($agt_sql);
-			if (mysql_error()) echo "<b>error: ".mysql_error()."</b>".$br;
+			mysqli_query($link, $agt_sql);
+			if (mysqli_error()) echo "<b>error: ".mysqli_error()."</b>".$br;
 		}
 	}
 	$sql = "CREATE INDEX ind_brows ON ".PPHL_DB_PREFIX.$id.$tbl_logs." (browser,version,system)";
-	mysql_qry($sql);
+	mysqli_qry($sql);
 	$sql = "CREATE INDEX ind_res ON ".PPHL_DB_PREFIX.$id.$tbl_logs." (res)";
-	mysql_qry($sql);
+	mysqli_qry($sql);
 	$sql = "UPDATE ".PPHL_DB_PREFIX.$id.$tbl_logs." SET time = time, hostname = NULL WHERE ip=hostname";
-	mysql_qry($sql);
+	mysqli_qry($sql);
 }
 
 // add the timeout_onl to your user table
 $sql = "ALTER TABLE ".PPHL_TBL_USERS." "
      . "ADD timeout_onl int(5) DEFAULT '300' NOT NULL AFTER timeout";
-mysql_qry($sql);
+mysqli_qry($sql);
 
 echo $br.$br."<b>Your upgrade to v.2.1.3 was successful!</b>";
 echo $br."Now, you should run <a href=\"screenres_refresh.".CFG_PHPEXT."\" target=\"_blank\">screenres_refresh.".CFG_PHPEXT."</a> to update your screen resolution data to the new format.";

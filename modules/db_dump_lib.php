@@ -15,8 +15,8 @@ function get_table_def($table, $crlf)
 
     $schema_create .= "CREATE TABLE $table ($crlf";
 
-    $result = mysql_query("SHOW FIELDS FROM $table") or mysql_die();
-    while($row = mysql_fetch_array($result))
+    $result = mysqli_query($link, "SHOW FIELDS FROM $table") or mysqli_die();
+    while($row = mysqli_fetch_array($result))
     {
         $schema_create .= "   $row[Field] $row[Type]";
 
@@ -29,8 +29,8 @@ function get_table_def($table, $crlf)
         $schema_create .= ",$crlf";
     }
     $schema_create = ereg_replace(",".$crlf."$", "", $schema_create);
-    $result = mysql_query("SHOW KEYS FROM $table") or mysql_die();
-    while($row = mysql_fetch_array($result))
+    $result = mysqli_query($link, "SHOW KEYS FROM $table") or mysqli_die();
+    while($row = mysqli_fetch_array($result))
     {
         $kname=$row['Key_name'];
         if(($kname != "PRIMARY") && ($row['Non_unique'] == 0))
@@ -58,15 +58,15 @@ function get_table_def($table, $crlf)
 // Get the content of $table as a series of INSERT statements.
 function get_table_content($table, $handler, $where)
 {
-    $result = mysql_query("SELECT * FROM $table $where") or mysql_die();
+    $result = mysqli_query($link, "SELECT * FROM $table $where") or mysqli_die();
     $i = 0;
-    while($row = mysql_fetch_row($result))
+    while($row = mysqli_fetch_row($result))
     {
         //set_time_limit(60); // HaRa - DISABLED BY PHILIPPO
         $table_list = "(";
 
-        for($j=0; $j<mysql_num_fields($result);$j++)
-            $table_list .= mysql_field_name($result,$j).", ";
+        for($j=0; $j<mysqli_num_fields($result);$j++)
+            $table_list .= mysqli_field_name($result,$j).", ";
 
         $table_list = substr($table_list,0,-2);
         $table_list .= ")";
@@ -76,7 +76,7 @@ function get_table_content($table, $handler, $where)
         else
             $schema_insert = "INSERT INTO $table VALUES (";
 
-        for($j=0; $j<mysql_num_fields($result);$j++)
+        for($j=0; $j<mysqli_num_fields($result);$j++)
         {
             if(!isset($row[$j]))
                 $schema_insert .= " NULL,";
@@ -94,7 +94,7 @@ function get_table_content($table, $handler, $where)
 }
 
 
-function mysql_die($error = "")
+function mysqli_die($error = "")
 {
     global $strError,$strSQLQuery, $strMySQLSaid, $strBack, $sql_query;
 
@@ -104,7 +104,7 @@ function mysql_die($error = "")
         echo "$strSQLQuery: <pre>$sql_query</pre><p>";
     }
     if(empty($error))
-        echo $strMySQLSaid.mysql_error();
+        echo $strMySQLSaid.mysqli_error();
     else
         echo $strMySQLSaid.$error;
     echo "<br /><a href=\"javascript:history.go(-1)\">$strBack</a>";

@@ -26,28 +26,28 @@ include PPHL_SCRIPT_PATH."main_location.inc";
 
 $sql = "ALTER TABLE ".PPHL_TBL_USERS." "
      . "ADD ipblock text AFTER your_url";
-mysql_qry($sql);
+mysqli_qry($sql);
 
 $sql = "UPDATE ".PPHL_TBL_USERS." SET last_access=last_access, ipblock = '127.0.0.1'";
-mysql_qry($sql);
+mysqli_qry($sql);
 
 $sql = "SELECT id FROM ".PPHL_TBL_USERS;
-$res = mysql_query($sql);
-while ($row = mysql_fetch_array($res)) {
+$res = mysqli_query($link, $sql);
+while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	$sql = "ALTER TABLE ".PPHL_DB_PREFIX.$id.$tbl_logs." "
 		 . "ADD seareng varchar(60) NOT NULL AFTER referer";
-	mysql_qry($sql);
+	mysqli_qry($sql);
 	
 	/* fixes bug in 2.1.3 that occured in mySQL 3.22 */
 	$sql = "ALTER TABLE ".PPHL_DB_PREFIX.$id.$tbl_logs." "
 	     . "CHANGE browser browser varchar(8) NOT NULL, "
 		 . "CHANGE version version varchar(8) NOT NULL, "
 		 . "CHANGE system system varchar(15) NOT NULL";
-	mysql_qry($sql);
+	mysqli_qry($sql);
 	
 	$sql = "CREATE INDEX ind_seng ON ".PPHL_DB_PREFIX.$id.$tbl_logs." (seareng)";
-	mysql_qry($sql);
+	mysqli_qry($sql);
 }
 
 echo $br.$br."<b>Your upgrade to v.2.1.4 was successful!</b>";

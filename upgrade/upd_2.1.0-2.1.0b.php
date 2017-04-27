@@ -21,29 +21,29 @@ $ok = true;
 
 //Load the new pphl_domains table
 $sql = "DROP TABLE IF EXISTS ".PPHL_TBL_DOMAINS;
-mysql_qry($sql);
+mysqli_qry($sql);
 exec_sql_lines(SQL_DOMAINS, 'pphl_domains', PPHL_TBL_DOMAINS);
 
 //minor changes in pphlogger_userlog and pphlogger_users
 $sql = "ALTER TABLE ".PPHL_TBL_USERLOG." "
      . "ADD ok enum('Y','N') DEFAULT 'N' NOT NULL;";
-mysql_qry($sql);
+mysqli_qry($sql);
 $sql = "ALTER TABLE ".PPHL_TBL_USERS." "
      . "ADD gmt int(2) DEFAULT '1' NOT NULL, " //change the DEFAULT value to your GMT
 	 . "ALTER visible SET DEFAULT 'N';"; 
-mysql_qry($sql);
+mysqli_qry($sql);
 
 //scan through all your user's log-tables and extract TLD-names into a new column
 $sql = "SELECT id FROM ".PPHL_TBL_USERS;
-$res = mysql_query($sql);
-while ($row = mysql_fetch_array($res)) {
+$res = mysqli_query($link, $sql);
+while ($row = mysqli_fetch_array($res)) {
 	$id = $row['id'];
 	$sql = "ALTER TABLE ".PPHL_DB_PREFIX.$id.$tbl_logs." ADD tld varchar(8) NOT NULL AFTER hostname;";
-	mysql_qry($sql);
+	mysqli_qry($sql);
 	$sql = "UPDATE ".PPHL_DB_PREFIX.$id.$tbl_logs." SET tld=LCASE(SUBSTRING_INDEX(hostname, '.', -1)),time=time WHERE (hostname<>ip);";
-	mysql_qry($sql);
+	mysqli_qry($sql);
 	$sql = "CREATE INDEX tld_ind ON ".$id."_logs (tld);";
-	mysql_qry($sql);
+	mysqli_qry($sql);
 }
 
 echo $br.$br."<b>Your upgrade to v.2.1.0b was successful!</b>";
