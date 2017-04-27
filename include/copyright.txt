@@ -1,0 +1,23 @@
+
+    ************************************************************
+    *                                                          *
+    *  PowerPhlogger is distributed under the terms of the     *
+    *  GNU Public License                                      *
+    *                                                          *
+    *  (c) 2000-2004 WWW.PHPEE.COM                             *
+    *  All rights reserved.                                    *
+    *                                                          *
+    ************************************************************
+
+
+                         \\\\|////
+                         \\ _ _ //
+                          ( o o )
+       +===============oOOo-(_)-oOOo===========+
+                     www.phpee.com
+        (c)Philip Iezzi [pipo at phpee dot com]
+       +=======================Oooo============+
+                         oooO  (  )
+                         (  )  ) /
+                          \ ( (_/
+                           \_)

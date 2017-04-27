@@ -1,0 +1,42 @@
+$Id: STANDARDS 2187 2004-01-31 14:30:19Z cvs_iezzi $
+
+
+data types
+-----------
+*.php     -> php files
+*.inc.php -> php includes
+*.mod.php -> php modules
+*.lib.php -> php libraries
+*.sql     -> mySQL data definitions
+
+PHP file naming
+---------------
+dsp*.php -> display
+chg*.php -> change
+del*.php -> delete
+new*.php -> create
+do*.php  -> execute
+
+language-handling
+-----------------
+bh -> Bosnian
+cn -> Chinese Simplified
+de -> German
+dk -> Danish
+en -> English
+es -> Spanish
+fr -> French
+gr -> Greek
+it -> Italian
+jp -> Japanese
+lt -> Lithuanian
+lv -> Latvian
+nl -> Dutch
+no -> Norwegian
+pl -> Polish
+po -> Brazilian Portugese
+ro -> Romanian
+ru -> Russian
+se -> Swedish
+tr -> Turkish
+tw -> Traditional Chinese

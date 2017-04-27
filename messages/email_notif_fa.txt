@@ -1,0 +1,10 @@
+----------------------------------
+ÂãÇÑ Power Phlogger:
+----------------------------------
+
+%primary_url%
+ÊÚÏÇÏ ãÑÇÌÚÇÊ ÇÒ ÊÇÑíÎ %datestart_formated%: %hits%
+
+
+(c) PowerPhlogger %curr_ver%  - http://www.phpee.com
+ãíÒÈÇä %server_name%
