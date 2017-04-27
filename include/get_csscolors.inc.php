@@ -2,7 +2,10 @@
 // $Id: get_csscolors.inc.php 1759 2003-08-18 19:15:45Z cvs_iezzi $
 
 /* get the columns names and fill them into an array */
-$res = mysqli_list_fields(PPHL_DB_NAME, PPHL_TBL_CSS);
+# list_fields not present in mysqli
+#$res = mysqli_list_fields(PPHL_DB_NAME, PPHL_TBL_CSS);
+
+$res = mysqli_query($link, "SHOW COLUMNS FROM ".PPHL_TBL_CSS.";");
 for($i = 0; $i < mysqli_num_fields($res); $i++) $csscolors[$i] = mysqli_field_name($res, $i);
 
 /* fill the css color array */
