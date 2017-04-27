@@ -23,8 +23,11 @@ if (!defined('__GOT_USERDATA__')){
 	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 	if (mysqli_num_rows($res)) {
 		$cnt_user_fields = count($user_fields);
+		# always row 0, so we can prefetch it.
+		$temp = mysqli_fetch_row($res);
 		for($i = 0; $i < $cnt_user_fields; $i++) {
-			${$user_fields[$i]} = mysqli_result($res, 0, $i); //get all user vars
+			${$user_fields[$i]} = temp[$i]; //get all user vars
+			# ${$user_fields[$i]} = mysqli_result($res, 0, $i); //get all user vars
 		}
 	} else {
 		if (isset($redir_view)) {
