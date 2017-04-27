@@ -575,7 +575,7 @@ function insert_agent ($agt, $extract = false) {
   --------------------------------------------------*/
 function email_is_valid ($email) { 
 	global $mxlookup;
-	if (preg_match("~~^[0-9a-z_]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.[a-z]{2,6}$~i~", $email)) {
+	if (preg_match("~^[0-9a-z_]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.[a-z]{2,6}$~i", $email)) {
 	//if (preg_match("~^([0-9,a-z,A-Z]+)([.,_,-]([0-9,a-z,A-Z]+))*[@]([0-9,a-z,A-Z]+)([.,_,-]([0-9,a-z,A-Z]+))*[.]([0-9,a-z,A-Z]){2}([0-9,a-z,A-Z])?$~",$email)) {
 		if ($mxlookup) { // check MX if specified in settings
 			$tld = substr(strstr($email, '@'), 1);

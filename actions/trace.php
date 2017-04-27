@@ -37,7 +37,7 @@ if (defined('PHP_OS') && preg_match('/win/i', PHP_OS)) define('IS_WINDOWS', 1);
 else define('IS_WINDOWS', 0);
 
 // check if request came from the same host
-if(!preg_match("~~$HTTP_HOST~i~",$HTTP_REFERER)) {
+if(!preg_match("~$HTTP_HOST~i",$HTTP_REFERER)) {
 	echo 'Traceroute information is only allowed if referred from the following host: '.$HTTP_HOST;
 	exit;
 }
