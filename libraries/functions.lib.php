@@ -1219,10 +1219,12 @@ function getHEX($mycolor) {
   returns them as an array
   --------------------------------------------------------*/
 function getTableFields($tbl) {
-	$res = mysqli_list_fields(PPHL_DB_NAME, $tbl);
+#	$res = mysqli_list_fields(PPHL_DB_NAME, $tbl);
+	$res = mysqli_query($GLOBALS['mysql_link'], "SELECT * FROM ".$tbl." LIMIT 1;");
 	$cnt_fields = mysqli_num_fields($res);
 	for($i = 0; $i < $cnt_fields; $i++)
-		$fields[$i] = mysqli_field_name($res, $i);
+		$fields[$i] = mysqli_fetch_field($res)->name;
+#		$fields[$i] = mysqli_field_name($res, $i);
 	return $fields;
 }
 
