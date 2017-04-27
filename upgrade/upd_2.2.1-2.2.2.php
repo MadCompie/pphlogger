@@ -138,7 +138,7 @@ if ($usrIDs) {
 	$sql = "SHOW TABLES LIKE '%_____\_logs'";
 	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 	while ($row = @mysqli_fetch_array($res)) {
-		if(preg_match("/([0-9]{5})/i",$row[0],$id_arr)) {
+		if(preg_match("~([0-9]{5})~i~",$row[0],$id_arr)) {
 			$id = $id_arr[0];
 			if (!isInArray($id,$usrIDs)) {
 				$sql = "DROP TABLE IF EXISTS ".PPHL_DB_PREFIX_OLD.$id.$tbl_logs.", ".PPHL_DB_PREFIX_OLD.$id.$tbl_mpdl.", ".PPHL_DB_PREFIX_OLD.$id.$tbl_ipcheck;
