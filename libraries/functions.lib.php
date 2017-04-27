@@ -159,7 +159,7 @@ function _cutIndex($url) {
 }
 
 function _cutQueryPart($url) {
-	preg_match("([^\?#&; ]*)",$url,$split_url);
+	preg_match("~([^\?#&; ]*)~",$url,$split_url);
 	return trim($split_url[1]);
 }
 
@@ -575,8 +575,8 @@ function insert_agent ($agt, $extract = false) {
   --------------------------------------------------*/
 function email_is_valid ($email) { 
 	global $mxlookup;
-	if (preg_match("/^[0-9a-z_]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.[a-z]{2,6}$/i", $email)) {
-	//if (preg_match("^([0-9,a-z,A-Z]+)([.,_,-]([0-9,a-z,A-Z]+))*[@]([0-9,a-z,A-Z]+)([.,_,-]([0-9,a-z,A-Z]+))*[.]([0-9,a-z,A-Z]){2}([0-9,a-z,A-Z])?$",$email)) {
+	if (preg_match("~~^[0-9a-z_]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.[a-z]{2,6}$~i~", $email)) {
+	//if (preg_match("~^([0-9,a-z,A-Z]+)([.,_,-]([0-9,a-z,A-Z]+))*[@]([0-9,a-z,A-Z]+)([.,_,-]([0-9,a-z,A-Z]+))*[.]([0-9,a-z,A-Z]){2}([0-9,a-z,A-Z])?$~",$email)) {
 		if ($mxlookup) { // check MX if specified in settings
 			$tld = substr(strstr($email, '@'), 1);
 			if (getmxrr($tld, $email_val) ) return true;
@@ -1175,11 +1175,11 @@ function GetColor($Colorname) {
   --------------------------------------------------------*/
 function getRGB($mycolor) {
 	if($mycolor[0]=="#") {
-		preg_match("#([0-9A-Fa-f][0-9A-Fa-f])([0-9A-Fa-f][0-9A-Fa-f])([0-9A-Fa-f][0-9A-Fa-f])", $mycolor, $tmp);
+		preg_match("~#([0-9A-Fa-f][0-9A-Fa-f])([0-9A-Fa-f][0-9A-Fa-f])([0-9A-Fa-f][0-9A-Fa-f])~", $mycolor, $tmp);
 		$c["red"]   = hexdec($tmp[1]);
 		$c["green"] = hexdec($tmp[2]);
 		$c["blue"]  = hexdec($tmp[3]);
-	} else if (preg_match("([0-9]*) ([0-9]*) ([0-9]*)", str_replace("+"," ",$mycolor), $tmp)) {
+	} else if (preg_match("~([0-9]*) ([0-9]*) ([0-9]*)~", str_replace("+"," ",$mycolor), $tmp)) {
 		$c["red"]   = $tmp[1];
 		$c["green"] = $tmp[2];
 		$c["blue"]  = $tmp[3];
@@ -1196,9 +1196,9 @@ function getRGB($mycolor) {
   --------------------------------------------------------*/
 function getHEX($mycolor) {
 	$mycolor = str_replace('#','',$mycolor);
-	if(preg_match("[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]", $mycolor)) {
+	if(preg_match("~[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]~", $mycolor)) {
 		$c = $mycolor;
-	} else if (preg_match("([0-9]*) ([0-9]*) ([0-9]*)", str_replace("+"," ",$mycolor), $tmp)) {
+	} else if (preg_match("~([0-9]*) ([0-9]*) ([0-9]*)~", str_replace("+"," ",$mycolor), $tmp)) {
 		$c['red']   = sprintf("%02s", dechex($tmp[1]));
 		$c['green'] = sprintf("%02s", dechex($tmp[2]));
 		$c['blue']  = sprintf("%02s", dechex($tmp[3]));
@@ -1283,7 +1283,7 @@ function getNewPath($id,$logid) {
   extractIP()
   --------------------------------------------------*/
 function extractIP($ip) {
-	$b = preg_match("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $ip, $array);
+	$b = preg_match("~^([0-9]{1,3}\.){3,3}[0-9]{1,3}~", $ip, $array);
 	if ($b) return $array;
 	else return false;
 }
@@ -1752,7 +1752,7 @@ function tableExists($tbl) {
   4th number MUST be < 254 and != 0
   --------------------------------------------------*/
 function validIP($ip) {
-	if( preg_match("^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$", $ip,$regs_array) ) {
+	if( preg_match("~^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$~", $ip,$regs_array) ) {
 		if( ($regs_array[1] == 127 or $regs_array[1] > 223 or $regs_array[1] <= 0)
 		    or $regs_array[2] > 255
 			or $regs_array[3] > 255

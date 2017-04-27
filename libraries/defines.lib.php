@@ -151,10 +151,10 @@ if (!empty($_SERVER))
 else if (!empty($HTTP_SERVER_VARS))
 	$SERVER_SOFTWARE = @$HTTP_SERVER_VARS['SERVER_SOFTWARE'];
 
-if (preg_match("/(Microsoft-IIS)/([0-9]{1,2}.[0-9]{1,3})/i",$SERVER_SOFTWARE,$http_srv)) {
+if (preg_match("~~(Microsoft-IIS)/([0-9]{1,2}.[0-9]{1,3})~i~",$SERVER_SOFTWARE,$http_srv)) {
 	define('HTTP_SRV'   , 'IIS');
 	define('HTTP_SRV_V' , $http_srv[2]);
-} else if (preg_match("/(Apache)/([0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2})/i",$SERVER_SOFTWARE,$http_srv)) {
+} else if (preg_match("~~(Apache)/([0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2})~i~",$SERVER_SOFTWARE,$http_srv)) {
 	define('HTTP_SRV'   , 'APACHE');
 	define('HTTP_SRV_V' , $http_srv[2]);
 } else {
