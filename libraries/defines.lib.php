@@ -26,8 +26,8 @@ if (!defined('PPHLOGGER_BUILDDATE')) {
 
 // php version
 if (!defined('PHP_INT_VERSION')) {
-    if (!preg_match('([0-9]{1,2}).([0-9]{1,2}).([0-9]{1,2})', phpversion(), $match)) {
-        $result = preg_match('([0-9]{1,2}).([0-9]{1,2})', phpversion(), $match);
+    if (!preg_match('~([0-9]{1,2}).([0-9]{1,2}).([0-9]{1,2})~', phpversion(), $match)) {
+        $result = preg_match('~([0-9]{1,2}).([0-9]{1,2})~', phpversion(), $match);
     }
     if (isset($match) && !empty($match[1])) {
         if (!isset($match[2])) {
@@ -50,7 +50,7 @@ if (!defined('PHP_SESS')) {
 
 // Whether the os php is running on is windows or not
 if (!defined('IS_WINDOWS')) {
-    if (defined('PHP_OS') && preg_match('/win/i', PHP_OS)) {
+    if (defined('PHP_OS') && preg_match('~win~i~', PHP_OS)) {
         define('IS_WINDOWS', 1);
     } else {
         define('IS_WINDOWS', 0);
@@ -109,16 +109,16 @@ if (!defined('USR_OS') && !defined('UPD_CGI')) {
         define('USR_OS', 'Other');
     }
     // 2. browser and version
-    if (preg_match('MSIE ([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+    if (preg_match('~MSIE ([0-9].[0-9]{1,2})~', $HTTP_USER_AGENT, $log_version)) {
         define('USR_BROWSER_VER', $log_version[1]);
         define('USR_BROWSER_AGENT', 'IE');
-    } else if (preg_match('Opera(/| )([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+    } else if (preg_match('~Opera(/| )([0-9].[0-9]{1,2})~', $HTTP_USER_AGENT, $log_version)) {
         define('USR_BROWSER_VER', $log_version[2]);
         define('USR_BROWSER_AGENT', 'OPERA');
-    } else if (preg_match('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+    } else if (preg_match('~Mozilla/([0-9].[0-9]{1,2})~', $HTTP_USER_AGENT, $log_version)) {
         define('USR_BROWSER_VER', $log_version[1]);
         define('USR_BROWSER_AGENT', 'MOZILLA');
-    } else if (preg_match('Konqueror/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+    } else if (preg_match('~Konqueror/([0-9].[0-9]{1,2})~', $HTTP_USER_AGENT, $log_version)) {
         define('USR_BROWSER_VER', $log_version[1]);
         define('USR_BROWSER_AGENT', 'KONQUEROR');
     } else {
