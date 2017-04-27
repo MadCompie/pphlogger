@@ -4,7 +4,7 @@
 /* get the columns names and fill them into an array */
 # list_fields not present in mysqli
 #$res = mysqli_list_fields(PPHL_DB_NAME, PPHL_TBL_CSS);
-$res = mysqli_query($GLOBALS['mysql_link'], "SHOW COLUMNS FROM ".PPHL_TBL_CSS.";");
+$res = mysqli_query($GLOBALS['mysql_link'], "SELECT * FROM ".PPHL_TBL_CSS." LIMIT 1;");
 #for($i = 0; $i < mysqli_num_fields($res); $i++) $csscolors[$i] = mysqli_field_name($res, $i);
 for($i = 0; $i < mysqli_num_fields($res); $i++) 
 {
