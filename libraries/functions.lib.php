@@ -159,7 +159,7 @@ function _cutIndex($url) {
 }
 
 function _cutQueryPart($url) {
-	ereg("([^\?#&; ]*)",$url,$split_url);
+	preg_match("([^\?#&; ]*)",$url,$split_url);
 	return trim($split_url[1]);
 }
 
@@ -354,8 +354,8 @@ function load_engines() {
     if ($fp = @fopen(INC_ENGINESINI, 'r')) {
         while ($data = fgets($fp, 256)) {
             $data = trim(chop($data));
-            if (!ereg('^#', $data) && $data != '') {
-                if (ereg('^\[(.*)\]$', $data, $engines)) {
+            if (!preg_match('^#', $data) && $data != '') {
+                if (preg_match('^\[(.*)\]$', $data, $engines)) {
                     // engine
                     $engine = $engines[1];
                     // query | dir
@@ -440,9 +440,9 @@ function show_keywords($kw_referer, $arr_engines) {
     }
 	
 	// by Carsten Albrecht <albrecht@caits.de>
-	$keywords=ereg_replace("\+"," ",$keywords);
-	// $keywords=ereg_replace("[0-9]","",$keywords);
-	$keywords=ereg_replace("\"","",$keywords);
+	$keywords=preg_replace("\+"," ",$keywords);
+	// $keywords=preg_replace("[0-9]","",$keywords);
+	$keywords=preg_replace("\"","",$keywords);
 
 	$buffer[0] = strip_tags($kw_referer);
 	$buffer[1] = $host;
@@ -575,8 +575,8 @@ function insert_agent ($agt, $extract = false) {
   --------------------------------------------------*/
 function email_is_valid ($email) { 
 	global $mxlookup;
-	if (eregi("^[0-9a-z_]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.[a-z]{2,6}$", $email)) {
-	//if (ereg("^([0-9,a-z,A-Z]+)([.,_,-]([0-9,a-z,A-Z]+))*[@]([0-9,a-z,A-Z]+)([.,_,-]([0-9,a-z,A-Z]+))*[.]([0-9,a-z,A-Z]){2}([0-9,a-z,A-Z])?$",$email)) {
+	if (preg_match("/^[0-9a-z_]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.[a-z]{2,6}$/i", $email)) {
+	//if (preg_match("^([0-9,a-z,A-Z]+)([.,_,-]([0-9,a-z,A-Z]+))*[@]([0-9,a-z,A-Z]+)([.,_,-]([0-9,a-z,A-Z]+))*[.]([0-9,a-z,A-Z]){2}([0-9,a-z,A-Z])?$",$email)) {
 		if ($mxlookup) { // check MX if specified in settings
 			$tld = substr(strstr($email, '@'), 1);
 			if (getmxrr($tld, $email_val) ) return true;
@@ -1175,11 +1175,11 @@ function GetColor($Colorname) {
   --------------------------------------------------------*/
 function getRGB($mycolor) {
 	if($mycolor[0]=="#") {
-		ereg("#([0-9A-Fa-f][0-9A-Fa-f])([0-9A-Fa-f][0-9A-Fa-f])([0-9A-Fa-f][0-9A-Fa-f])", $mycolor, $tmp);
+		preg_match("#([0-9A-Fa-f][0-9A-Fa-f])([0-9A-Fa-f][0-9A-Fa-f])([0-9A-Fa-f][0-9A-Fa-f])", $mycolor, $tmp);
 		$c["red"]   = hexdec($tmp[1]);
 		$c["green"] = hexdec($tmp[2]);
 		$c["blue"]  = hexdec($tmp[3]);
-	} else if (ereg("([0-9]*) ([0-9]*) ([0-9]*)", str_replace("+"," ",$mycolor), $tmp)) {
+	} else if (preg_match("([0-9]*) ([0-9]*) ([0-9]*)", str_replace("+"," ",$mycolor), $tmp)) {
 		$c["red"]   = $tmp[1];
 		$c["green"] = $tmp[2];
 		$c["blue"]  = $tmp[3];
@@ -1196,9 +1196,9 @@ function getRGB($mycolor) {
   --------------------------------------------------------*/
 function getHEX($mycolor) {
 	$mycolor = str_replace('#','',$mycolor);
-	if(ereg("[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]", $mycolor)) {
+	if(preg_match("[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]", $mycolor)) {
 		$c = $mycolor;
-	} else if (ereg("([0-9]*) ([0-9]*) ([0-9]*)", str_replace("+"," ",$mycolor), $tmp)) {
+	} else if (preg_match("([0-9]*) ([0-9]*) ([0-9]*)", str_replace("+"," ",$mycolor), $tmp)) {
 		$c['red']   = sprintf("%02s", dechex($tmp[1]));
 		$c['green'] = sprintf("%02s", dechex($tmp[2]));
 		$c['blue']  = sprintf("%02s", dechex($tmp[3]));
@@ -1283,7 +1283,7 @@ function getNewPath($id,$logid) {
   extractIP()
   --------------------------------------------------*/
 function extractIP($ip) {
-	$b = ereg ("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $ip, $array);
+	$b = preg_match("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $ip, $array);
 	if ($b) return $array;
 	else return false;
 }
@@ -1561,7 +1561,7 @@ function calcTableSize($id = 0) {
 			if (isset($row['Type'])) {
 				if ($row['Type'] == 'MRG_MyISAM') {
 					$mergetable = TRUE;
-				} else if (!eregi('ISAM|HEAP|InnoDB', $row['Type'])) {
+				} else if (!preg_match('/ISAM|HEAP|InnoDB/i', $row['Type'])) {
 					$nonisam    = TRUE;
 				}
 			}
@@ -1571,7 +1571,7 @@ function calcTableSize($id = 0) {
 					if ($nonisam == FALSE) {
 						$this_tblsize = $row['Data_length'] + $row['Index_length'];
 						// user tables
-						if (eregi('_logs|_mpdl', $table)) {
+						if (preg_match('/_logs|_mpdl/i', $table)) {
 							$this_id = (int)(substr($table,strlen(PPHL_DB_PREFIX),5));
 							if ($id == 0) { // only update all user table sizes if id is not set (performance!)
 								$sql = "UPDATE ".PPHL_TBL_USERS." SET tblsize = tblsize+$this_tblsize WHERE id = $this_id";
@@ -1721,7 +1721,7 @@ function isWritableDir($dir = '') {
 function _unlink($file) {
 	$delete = @unlink($file);
 	if (@file_exists($file)) {
-		$filesys = eregi_replace("/","\\",$file);
+		$filesys = preg_replace("/\//i","\\",$file);
 		$delete = @system("del $filesys");
 		if (@file_exists($file)) {
 			$delete = @chmod ($file, 0775);
@@ -1752,7 +1752,7 @@ function tableExists($tbl) {
   4th number MUST be < 254 and != 0
   --------------------------------------------------*/
 function validIP($ip) {
-	if( ereg("^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$", $ip,$regs_array) ) {
+	if( preg_match("^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$", $ip,$regs_array) ) {
 		if( ($regs_array[1] == 127 or $regs_array[1] > 223 or $regs_array[1] <= 0)
 		    or $regs_array[2] > 255
 			or $regs_array[3] > 255
