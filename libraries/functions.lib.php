@@ -6,6 +6,23 @@
     functions.php - function library used in PowerPhlogger
     --------------------------------------------------------- */
 
+/*
+ mysqli_result()
+ fix for php7, which lacks such funtion
+*/
+
+function mysqli_result($res,$row=0,$col=0){ 
+    $numrows = mysqli_num_rows($res); 
+    if ($numrows && $row <= ($numrows-1) && $row >=0){
+        mysqli_data_seek($res,$row);
+        $resrow = (is_numeric($col)) ? mysqli_fetch_row($res) : mysqli_fetch_assoc($res);
+        if (isset($resrow[$col])){
+            return $resrow[$col];
+        }
+    }
+    return false;
+}
+
 /*--------------------------------------------------
   mysqlversion()
   get mySQL Version for meta-tag information
@@ -284,7 +301,7 @@ function newPw($username,$email,$newPw = '') {
 	$md5pw = md5($newPw);
 	$sql = "UPDATE ".PPHL_TBL_USERS." SET pw='$md5pw' WHERE username='$username' AND email='$email'";
 	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
-	if (mysqli_affected_rows()) {
+	if (mysqli_affected_rows($GLOBALS['mysql_link'])) {
 		$subject = "PPhlogger password change for $username";
 		$headers = getMailheader($admin_mail);
 		$headers .= "X-Priority: 1\r\n";
@@ -493,7 +510,7 @@ function insert_mpdl ($url, $type = 'mp', $table = false, $title = '', $update =
 	if (!mysqli_num_rows($res)) {
 		$sql2 = "INSERT INTO $table (enabled,type,url,since,title) VALUES ($active,'$type','$url',$curr_gmt_time,'$title')";
 		$res2 = mysqli_query($GLOBALS['mysql_link'], $sql2);
-		return mysqli_insert_id();
+		return mysqli_insert_id($GLOBALS['mysql_link']);
 	} else {
 		if($update) {
 			$enabled = mysqli_result($res,0,1);
@@ -533,7 +550,7 @@ function insert_res ($w, $h) {
 	if (!mysqli_num_rows($res)) {
 		$sql2 = "INSERT INTO $tbl_res (width,height) VALUES ($w,$h)";
 		$res2 = mysqli_query($GLOBALS['mysql_link'], $sql2);
-		return mysqli_insert_id();
+		return mysqli_insert_id($GLOBALS['mysql_link']);
 	} else {
 		return mysqli_result($res,0,0);
 	}
@@ -561,7 +578,7 @@ function insert_agent ($agt, $extract = false) {
 			$sql2 = "INSERT INTO ".PPHL_TBL_AGENTS." (agent) VALUES ('$agt')";
 		}
 		$res2 = mysqli_query($GLOBALS['mysql_link'], $sql2);
-		return mysqli_insert_id();
+		return mysqli_insert_id($GLOBALS['mysql_link']);
 	} else {
 		return mysqli_result($res,0,0);
 	}
@@ -767,7 +784,7 @@ function putSerializedCache($type, $cache, $id = 0, $yyyymm = 0) {
 	
 	$sql = "UPDATE ".PPHL_TBL_CACHE." SET cache='".$sCache."', time=$curr_gmt_time WHERE id=$id AND type='$type' AND yyyymm=$yyyymm";
 	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
-	if (mysqli_affected_rows()) {
+	if (mysqli_affected_rows($GLOBALS['mysql_link'])) {
 		return true;
 	} else {
 		$sql = "INSERT INTO ".PPHL_TBL_CACHE." (id,type,yyyymm,cache,time) VALUES ($id,'$type',$yyyymm,'".$sCache."',$curr_gmt_time)";
@@ -1098,14 +1115,14 @@ function get_totalrows($table,$logs_from = 0, $logs_to = 0) {
 	if($logs_from != 0) $sql .= " WHERE time > ".UserToGMT($logs_from)." AND time < (".UserToGMT($logs_to)."+86400)";
 	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
 	$temp = mysqli_fetch_assoc($res);
-	return temp['total'];
+	return $temp['total'];
 }
 
 function get_tbltotalrows($table) {
 	$sql = "SELECT count(*) AS total FROM ".$table;
 	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
         $temp = mysqli_fetch_assoc($res);
-        return temp['total'];
+        return $temp['total'];
 }
 
 
@@ -1117,7 +1134,7 @@ function get_total_activeUser() {
 	$sql = "SELECT count(*) AS total FROM ".PPHL_TBL_USERS." WHERE conf = 1 AND del_usr = 0";
 	$res = mysqli_query($GLOBALS['mysql_link'], $sql);
         $temp = mysqli_fetch_assoc($res);
-        return temp['total'];
+        return $temp['total'];
 }
 
 

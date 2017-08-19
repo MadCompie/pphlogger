@@ -213,11 +213,11 @@ if ( !isset($$cookie_phloff) &&  // cookie-switch off?
 		     . "VALUES ('$hostname','$tld','$ip',$entryid,$entryid,'$referer','$seareng',$agentid,$res_w,$res_h,$c,$curr_gmt_time,$curr_gmt_time,"
 		     . "'$proxy','$proxy_ip','$proxy_hostname')";
 		$res = mysqli_query($GLOBALS['mysql_link'], $sql);
-		$logid = mysqli_insert_id();
+		$logid = mysqli_insert_id($GLOBALS['mysql_link']);
 		
 		/* DEBUG !!! - send email to administrator*/
-		if(mysqli_error()) { // if there was an error in the above mysql-statement, mail it to the admin
-			$err_msg = mysqli_errno().": ".mysqli_error();
+		if(mysqli_error($GLOBALS['mysql_link'])) { // if there was an error in the above mysql-statement, mail it to the admin
+			$err_msg = mysqli_errno($GLOBALS['mysql_link']).": ".mysqli_error($GLOBALS['mysql_link']);
 			$err_time = date("M d, h:i:s A");
 			mail($admin_mail, "mysql error - ".$username, $sql.CRLF.CRLF.CRLF.$err_msg.CRLF.CRLF.$err_time, getMailheader($admin_mail));
 		}
