@@ -6,11 +6,21 @@
 #$res = mysqli_list_fields(PPHL_DB_NAME, PPHL_TBL_CSS);
 $res = mysqli_query($GLOBALS['mysql_link'], "SELECT * FROM ".PPHL_TBL_CSS." LIMIT 1;");
 #for($i = 0; $i < mysqli_num_fields($res); $i++) $csscolors[$i] = mysqli_field_name($res, $i);
+/* marcel-190412: the mysqli_fetch_field seems to result in a memory fault in PHP7 :
 for($i = 0; $i < mysqli_num_fields($res); $i++) 
 {
     $temp = mysqli_fetch_field($res);
     $csscolors[$i] = $temp->name;
 }
+*/
+#marcel-190412: PHP7 out of memory solution
+$row = mysqli_fetch_assoc($res);
+$fields = array_keys($row);
+$fieldCount = count($fields);
+for ($i=0; $i<$fieldCount; $i++){
+	$csscolors[$i] = $fields[$i];
+}
+
 
 /* fill the css color array */
 $sql = "SELECT * FROM ".PPHL_TBL_CSS." WHERE id = $cssid";
